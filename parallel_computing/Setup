@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# cp Exercise directory
+cp -r /projects/becs/urbanic/Exercises ~/
+
+# install appropriate .bashrc
+cp -b /projects/becs/urbanic/.bashrc.pathways ~/.bashrc
+
+# notify to reboot
+echo "Pathways configured. Logout and login again."

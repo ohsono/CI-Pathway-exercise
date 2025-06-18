@@ -1,0 +1,20 @@
+=== Results for 1 threads ===
+Running with 1 OpenMP threads
+Primes: 41539
+
+=== Results for 4 threads ===
+Running with 4 OpenMP threads
+Primes: 41649
+
+=== Results for 8 threads ===
+Running with 8 OpenMP threads
+Primes: 41770
+
+=== Results for 16 threads ===
+Running with 16 OpenMP threads
+Primes: 42070
+
+=== Results for 32 threads ===
+Running with 32 OpenMP threads
+Primes: 42374
+
