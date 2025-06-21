@@ -1,5 +1,5 @@
 /*************************************************
- * Laplace OpenMP C Version
+ * Laplace Serial C Version
  *
  * Temperature is initially 0.0
  * Boundaries are as follows:
@@ -59,7 +59,6 @@ int main(int argc, char *argv[]) {
     while ( dt > MAX_TEMP_ERROR && iteration <= max_iterations ) {
 
         // main calculation: average my four neighbors
-        #pragma omp parallel for private(i,j)
         for(i = 1; i <= ROWS; i++) {
             for(j = 1; j <= COLUMNS; j++) {
                 Temperature[i][j] = 0.25 * (Temperature_last[i+1][j] + Temperature_last[i-1][j] +
@@ -70,7 +69,6 @@ int main(int argc, char *argv[]) {
         dt = 0.0; // reset largest temperature change
 
         // copy grid to old grid for next iteration and find latest dt
-        #pragma omp parallel for reduction(max:dt) private(i,j)
         for(i = 1; i <= ROWS; i++){
             for(j = 1; j <= COLUMNS; j++){
 	      dt = fmax( fabs(Temperature[i][j]-Temperature_last[i][j]), dt);
