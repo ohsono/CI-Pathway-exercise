@@ -1,0 +1,405 @@
+%\documentclass[11pt]{book}
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+
+
+
+\usepackage{epstopdf}
+\usepackage{caption}
+
+
+\usepackage[fleqn]{amsmath}
+
+
+
+\usepackage{tipx}
+\usepackage{tipa}
+
+\usepackage{breakcites}
+%\usepackage{/usr/local/texlive/2020/texmf-dist/tex/latex/breakcites/breakcites}
+
+%\usepackage{supertabular}
+%\usepackage{wasysym}
+
+%\usepackage{setspace}
+
+%\usepackage{pifont}
+
+
+
+\usepackage{enumitem}
+
+\usepackage{float} %%%% use H! position -- conserve vertical space
+
+%\usepackage{mathabx}
+
+
+%\usepackage{txfonts}
+
+
+%\usepackage{Sweave}
+
+\usepackage{fancyvrb} %%% for \VerbatimInput
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% FOR HYPER REF
+\usepackage{xcolor}
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+\definecolor{MyDarkRed}{rgb}{0.4,0.0,0.0} 
+\definecolor{MyBlue}{rgb}{0.0, 0.0, 0.5} 
+
+\definecolor{MyOrange1}{rgb}{1.0, 0.9, 0.0} 
+
+\usepackage[colorlinks=true, urlcolor= MyDarkRed, linkcolor= MyBlue, citecolor=MyDarkGreen ]{hyperref}
+
+%\usepackage[colorlinks=false, urlcolor= MyOrange1, linkbordercolor=MyOrange1, citecolor=MyDarkGreen ]{hyperref}
+
+\usepackage{makeidx}
+
+\usepackage{listings}
+\input{_latexFormatting_01.tex}
+
+
+\usepackage{geometry}
+
+\usepackage{textcomp}
+\usepackage{multirow}
+\usepackage{float}
+
+%\usepackage[colorlinks=true, urlcolor= \rgb{0.0,0.2,0.0}  ]{hyperref}
+
+
+
+
+%\singlespacing
+%\onehalfspacing
+%\doublespacing
+
+%\pagestyle{empty} %% turn off page numbering
+
+\DeclareCaptionLabelSeparator{space}
+
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\textwidth = 6.5 in
+\textheight = 8.2 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.7 in
+\parskip = 0.2in
+\parindent = 0.0in
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+%\title{Brief Article}
+%\author{The Author}
+
+
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\makeindex
+
+\begin{document}
+
+
+%\newcommand\textcode\Verb
+
+
+%\maketitle
+
+
+
+\newif\ifuselocaldir
+\uselocaldirtrue
+\uselocaldirfalse
+
+
+\newcommand{\DXZ}{
+\begin{flushright}
+\vspace{-.4in}
+ { \raisebox{0.30ex}{{\tiny D}}\hspace{0.008in}X\hspace{0.01in}\raisebox{0.30ex}{{\tiny Z}}     }
+\end{flushright}
+}
+
+
+\newenvironment{myQuote}[2]%
+               {\begin{list}{}{\leftmargin#1\rightmargin#2}\item{}}%
+               {\end{list}}
+
+\begin{myQuote}{2cm}{2cm}
+\begin{center}
+{\huge
+\textbf{CI Pathway: Parallel Computing} \\[0.4cm]
+Assignment - 1
+} \\[0.4cm]
+\end{center}
+\end{myQuote}
+
+%\begin{myQuote}{3cm}{3cm}
+%\begin{center}
+%PRILIMINARY \& INCOMPLETE \\
+%\end{center}
+%\end{myQuote}
+
+
+
+\begin{myQuote}{3cm}{3cm}
+{\normalsize
+\begin{center}
+UCLA, Statistics\\Hochan Son\\Summer 2025\\
+\today
+%2012-03-12
+\end{center}
+}
+\end{myQuote}
+
+
+%\begin{abstract}
+%{\normalsize
+%Here's my abstract
+%}
+%\end{abstract}
+
+
+%\newpage
+
+
+%%\tableofcontents
+
+
+%\newpage
+
+
+%\input{_example.tex}
+
+%\chapter{Introduction}
+
+%Our textbook is \cite{briney2015data}.
+
+
+%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+\section{Exercises For This Module.}
+Our first exercises will be to compile, run and time the Laplace code using the two programming
+models in this Pathway: \texttt{OpenMP and MPI}.
+This will get you familiar with the programming environment in preparation for our actual parallel
+programming in the next two modules.
+It will also allow you to experience some parallel scaling first hand.
+Specifically, our goal will be to compile the Laplace code in OpenMP and run it on varying
+numbers of \texttt{threads} to see how much it speeds up.
+We will do the same thing using MPI to run with multiple \texttt{processes}.
+Don't worry if it seems like we are skipping over some details today - we are. But those details
+will be made clear in our following modules.
+
+%\newgeometry{top=1cm, left=1cm, right=1cm}
+%\begin{figure}[htbp]
+%\begin{center}
+%\includegraphics[width=17.5cm]{_assets/bigStudentPicArray_01.jpeg}
+%\caption{UCLA Graduate Statistics Students}
+%\label{fig:studentArray}
+%\end{center}
+%\end{figure}
+%\restoregeometry
+
+
+\subsection{OpenMP}
+
+\begin{enumerate}
+  \item{Go into the OpenMP folder inside the Exercises folder. You will see codes there called \texttt{laplace\_omp.c} and \texttt{laplace\_omp.f90}. Select whichever language most interests you.
+  
+  To compile with OpenMP we do either:
+    \begin{verbatim}
+      nvc -mp laplace_omp.c
+      or
+      nvfortran -mp laplace_omp.f90
+    \end{verbatim}
+    
+  Now we have an executable called a.out. But we need to ask for a compute node with multiple cores allocated in order to run. The Slurm command to get us a command line (--pty bash) on a compute node \texttt{(--nodes=1)} with 32 cores \texttt{(--cpus-per-task=32)} is:
+    \begin{verbatim}
+      srun --account=becs-delta-cpu --partition=cpu-interactive \
+      --nodes=1 --tasks=4 --tasks-per-node=4 --pty bash
+    \end{verbatim}
+  }
+
+  \item {You will notice a few messages as Slurm find the resources, and then your command line will change to something with a compute node number in it. From the command line on this compute node we can run up to 32 cores. OpenMP allows us to control core usage with the \texttt{OMP\_NUM\_THREADS} environment variable. You learned about these in the Intro to Delta module. Set this variable to request 1 core \texttt{`( export `OMP\_NUM\_THREADS=1 )} and run with a.out to find the baseline run time for the Laplace code. If you select 4000 iterations, the code will run to a complete solution. It reports its own runtime for you. Now, try varying number of cores up to 32 and see what kind of speedup you experience. Note that you do not need to recompile the code. Just change the environment variable and run \texttt{a.out}. Record these times for our discussion. exit the compute node when you are finished. You should find yourself returned to the login node. }
+\end{enumerate}
+
+\subsection{MPI} 
+
+\begin{enumerate}
+  \item{Now we will do a similar exercise using MPI. Go into the MPI folder inside the Exercises folder. You will see codes there called \texttt{laplace\_mpi.c} and \texttt{laplace\_mpi.f}. Select whichever language most interests you.
+  
+  To compile with MPI we do either:
+    \begin{verbatim}
+      mpicc laplace_mpi.c
+      or
+      mpif90 laplace_mpi.f90
+    \end{verbatim}
+  
+  Again, you have an executable called a.out. Now you need to ask for a compute node with multiple processes allocated in order to run. Similar, but not identical, to the previous Slurm command, the one to get us a command line on a compute node with 4 processes \texttt{(--nodes=1 --tasks=4 --tasks-per-node=4)} is:
+  \begin{verbatim}
+    srun --account=becs-delta-cpu --partition=cpu-interactive \
+    --nodes=1 --tasks=4 --tasks-per-node=4 --pty bash
+  \end{verbatim}
+  }
+  \item{With MPI we will limit ourselves to a single timing run, using 4 processes. The command to
+  run our a.out executable on our four available processes is
+  \begin{verbatim}
+    mpirun -n 4 a.out
+  \end{verbatim}
+  Record this time for our later discussion.
+  Exit the compute node when you are finished.}
+\end{enumerate}
+
+\section {Exercise}
+
+\begin{enumerate}
+  \item{Exercise 1: Compile, run, and time the Laplace code using the two programming models in this Pathway: OpenMP and MPI.}
+    Vary the number of cores up to 32 by changing the \texttt{OMP\_NUM\_THREADS} environment variable to see what speedup you experience. Record these times.
+
+
+  \item{Exercise 2: Execute a single timing run, using 4 processes, and record the time obtained.}
+
+\end{enumerate}
+
+
+
+\section {Solution}
+
+\begin{enumerate}
+  \item{ The purpose of this exerise to measure the differeneces how the parallelism benefits the speed of the execution by distributed computation over multiple cpu cores. I've done few observations.
+  1. varying threads (1,8, and 32) on \texttt{OMP\_NUM\_THREADS} counts. 
+  2. varying techniques such as serial, openmp, and red-black (checkerboard algorithm) by complier tuning. 
+  The result of the operation is as below tables. \ref{tab:performance_comparison}\\
+  Each of the process has completed with 1,8, and 32 threads. It has shown that the serial process has no performance improvement across threads counts. The OpenMP has shown good performance. Although Enhanced Parallel test with red-black checker board algorithm has the best outcome at threads=32. 
+  However, the efficiency on 32 threads has decreasing. As thread count increases, efficiency typically decreases due to parallel overhead, communication costs, and workload imbalances.
+
+  \begin{table}[htbp]
+  \centering
+  \caption{Parallel Processing Performance Comparison}
+  \label{tab:performance_comparison}
+  \footnotesize
+  \begin{tabular}{lccccc}
+  \hline
+  \textbf{Method} & \textbf{Threads} & \textbf{Time (s)} & \textbf{Speedup} & \textbf{Efficiency (\%)} & \textbf{Iterations} \\
+  \hline
+  Serial Process Test & 1  & 22.040 & 1.00$\times$ & 100.0 & 3372 \\
+  Serial Process Test & 8  & 22.037 & 1.00$\times$ & 12.5  & 3372 \\
+  Serial Process Test & 32 & 22.065 & 1.00$\times$ & 3.1   & 3372 \\
+  \hline
+  OpenMP Process Test & 1  & 21.733 & 1.00$\times$ & 100.0 & 3372 \\
+  OpenMP Process Test & 8  & 4.175  & 5.21$\times$ & 65.1  & 3372 \\
+  OpenMP Process Test & 32 & 1.992  & 10.91$\times$ & 34.1 & 3372 \\
+  \hline
+  Enhanced (Red/Black) Parallel Test & 1  & 12.738 & 1.00$\times$ & 100.0 & 3279 \\
+  Enhanced (Red/Black) Parallel Test & 8  & 2.569  & 4.96$\times$ & 62.0  & 3279 \\
+  Enhanced (Red/Black) Parallel Test & 32 & 1.490  & 8.55$\times$ & 26.7  & 3279 \\
+  \hline
+  \end{tabular}
+  \end{table}
+  
+  \begin{itemize}
+    \item \textbf{Serial Test}: Shows no parallelization benefit, confirming serial execution regardless of thread count.
+    
+    \item \textbf{OpenMP Implementation}: Demonstrates significant speedup with increasing thread count:
+      \begin{itemize}
+      \item 8 threads: 5.21$\times$ speedup (65.1\% efficiency)
+      \item 32 threads: 10.91$\times$ speedup (34.1\% efficiency)
+      \end{itemize}
+    
+    \item \textbf{Enhanced Red/Black (checkerboard algorithm) Method}: Achieves best overall performance:
+      \begin{itemize}
+      \item Superior single-thread performance (12.738s vs 21.733s)
+      \item Best 32-thread performance (1.490s vs 1.992s)
+      \item 25.2\% faster than OpenMP at 32 threads
+      \item Slight reduction in required iterations (3279 vs 3372)
+      \end{itemize}
+    
+    \item \textbf{Efficiency Analysis}: Both parallel methods show decreasing efficiency with higher thread counts, typical of parallel overhead and diminishing returns.
+  
+  \end{itemize}
+}
+
+
+\item{
+  
+}
+
+\end{enumerate}
+%\include{appendicitis}
+
+\newpage{}
+%\pagebreak{}
+
+
+\bibliographystyle{plain}
+
+\bibliography{Lab_X} 
+
+
+\newpage
+
+\section{Appendix}
+
+Here's some of our code (Note the use of VerbatimInput from package \texttt{fancyvrb}):
+
+
+\subsection{Code A: laplace\_serial.c}
+
+%\begin{footnotesize}
+%\VerbatimInput{_code_A.R}
+%\end{footnotesize}
+
+\begin{footnotesize}
+\lstinputlisting[style=dm4ds_lstCustom_01]{laplace_serial.c}
+\end{footnotesize}
+
+
+
+
+\subsection{Code B: laplace\_omp.c}
+
+%\begin{footnotesize}
+%\VerbatimInput{_code_B.R}
+%\end{footnotesize}
+
+\begin{footnotesize}
+\lstinputlisting[style=dm4ds_lstCustom_01]{laplace_omp.c}
+\end{footnotesize}
+
+
+
+
+\subsection{Code C: laplace\_omp\_parallel.c}
+
+%\begin{footnotesize}
+%\VerbatimInput{_code_C.R}
+%\end{footnotesize}
+
+\begin{footnotesize}
+\lstinputlisting[style=dm4ds_lstCustom_01]{laplace_omp_parallel.c}
+\end{footnotesize}
+
+
+
+\subsection{result}
+\begin{footnotesize}
+ \lstinputlisting[style=dm4ds_lstCustom_01]{result.txt}
+\end{footnotesize}
+
+\end{document}
+
+
+
+
+
