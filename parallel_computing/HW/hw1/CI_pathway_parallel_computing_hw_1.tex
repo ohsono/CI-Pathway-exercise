@@ -226,8 +226,9 @@ will be made clear in our following modules.
     
   Now we have an executable called a.out. But we need to ask for a compute node with multiple cores allocated in order to run. The Slurm command to get us a command line (--pty bash) on a compute node \texttt{(--nodes=1)} with 32 cores \texttt{(--cpus-per-task=32)} is:
     \begin{verbatim}
-      srun --account=becs-delta-cpu --partition=cpu-interactive \
-      --nodes=1 --tasks=4 --tasks-per-node=4 --pty bash
+    srun --account=becs-delta-cpu --partition=cpu-interactive \
+       --nodes=1 --cpus-per-task=32 --pty bash
+
     \end{verbatim}
   }
 
@@ -332,7 +333,7 @@ will be made clear in our following modules.
 
 
 \item{
-  
+
 }
 
 \end{enumerate}
