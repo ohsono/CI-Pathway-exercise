@@ -42,7 +42,7 @@
 #define MAX_TEMP_ERROR 0.01
 
 double Temperature[ROWS+2][COLUMNS+2];
-double Temperature_last[ROWS+2][COLUMNS+2];
+double Temperature_last[ROWS+2][COLUMNS+2]; //padding for ghost cells
 
 void initialize(int npes, int my_PE_num);
 void track_progress(int iter);

@@ -1,14 +1,32 @@
 === Basic System Info ===
-Date: Wed Jun 25 13:53:09 CDT 2025
-System: Linux cn062.delta.ncsa.illinois.edu 4.18.0-477.95.1.el8_8.x86_64 #1 SMP Fri Apr 11 09:50:48 EDT 2025 x86_64 x86_64 x86_64 GNU/Linux
+Date: Wed Jun 25 14:19:21 CDT 2025
+System: Linux cn034.delta.ncsa.illinois.edu 4.18.0-477.95.1.el8_8.x86_64 #1 SMP Fri Apr 11 09:50:48 EDT 2025 x86_64 x86_64 x86_64 GNU/Linux
 CPU Info: AMD EPYC 7763 64-Core Processor
 =========================
 !!!!STARTING SERIAL process TEST!!!!
-=== Test with 1 threads ===
-Start time: 2025-06-25 13:53:09.127397216
-
+=== Test with 1 processes ===
+Start time: 2025-06-25 14:19:21.576658302
+[cn034.delta.ncsa.illinois.edu:17094] mca: base: components_register: registering framework ras components
+[cn034.delta.ncsa.illinois.edu:17094] mca: base: components_register: found loaded component simulator
+[cn034.delta.ncsa.illinois.edu:17094] mca: base: components_register: component simulator register function successful
+[cn034.delta.ncsa.illinois.edu:17094] mca: base: components_register: found loaded component slurm
+[cn034.delta.ncsa.illinois.edu:17094] mca: base: components_register: component slurm register function successful
+[cn034.delta.ncsa.illinois.edu:17094] mca: base: components_open: opening ras components
+[cn034.delta.ncsa.illinois.edu:17094] mca: base: components_open: found loaded component simulator
+[cn034.delta.ncsa.illinois.edu:17094] mca: base: components_open: found loaded component slurm
+[cn034.delta.ncsa.illinois.edu:17094] mca: base: components_open: component slurm open function successful
+[cn034.delta.ncsa.illinois.edu:17094] mca:base:select: Auto-selecting ras components
+[cn034.delta.ncsa.illinois.edu:17094] mca:base:select:(  ras) Querying component [simulator]
+[cn034.delta.ncsa.illinois.edu:17094] mca:base:select:(  ras) Querying component [slurm]
+[cn034.delta.ncsa.illinois.edu:17094] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[cn034.delta.ncsa.illinois.edu:17094] mca:base:select:(  ras) Selected component [slurm]
+[cn034.delta.ncsa.illinois.edu:17094] mca: base: close: unloading component simulator
+[cn034.delta.ncsa.illinois.edu:17094] mca: base: close: component slurm closed
+[cn034.delta.ncsa.illinois.edu:17094] mca: base: close: unloading component slurm
+End time: 2025-06-25 14:20:08.292080598
+Total wall clock time: 
 ======================   ALLOCATED NODES   ======================
-	cn062: flags=0x11 slots=4 max_slots=0 slots_inuse=0 state=UP
+	cn034: flags=0x11 slots=4 max_slots=0 slots_inuse=0 state=UP
 =================================================================
 Maximum iterations [100-4000]?
 ---------- Iteration number: 100 ------------
@@ -79,47 +97,47 @@ Maximum iterations [100-4000]?
 [995,995]: 97.66  [996,996]: 98.24  [997,997]: 98.75  [998,998]: 99.19  [999,999]: 99.56  [1000,1000]: 99.87  
 
 Max error at iteration 3372 was 0.009995
-Total time was 21.937483 seconds.
-End time: 2025-06-25 13:53:31.301773558
-Total wall clock time: [cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_register: registering framework ras components
-[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_register: found loaded component simulator
-[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_register: component simulator register function successful
-[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_register: found loaded component slurm
-[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_register: component slurm register function successful
-[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_open: opening ras components
-[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_open: found loaded component simulator
-[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_open: found loaded component slurm
-[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_open: component slurm open function successful
-[cn062.delta.ncsa.illinois.edu:3566715] mca:base:select: Auto-selecting ras components
-[cn062.delta.ncsa.illinois.edu:3566715] mca:base:select:(  ras) Querying component [simulator]
-[cn062.delta.ncsa.illinois.edu:3566715] mca:base:select:(  ras) Querying component [slurm]
-[cn062.delta.ncsa.illinois.edu:3566715] mca:base:select:(  ras) Query of component [slurm] set priority to 50
-[cn062.delta.ncsa.illinois.edu:3566715] mca:base:select:(  ras) Selected component [slurm]
-[cn062.delta.ncsa.illinois.edu:3566715] mca: base: close: unloading component simulator
-[cn062.delta.ncsa.illinois.edu:3566715] mca: base: close: component slurm closed
-[cn062.delta.ncsa.illinois.edu:3566715] mca: base: close: unloading component slurm
-22.166 seconds
+Total time was 46.471284 seconds.
+46.711 seconds
 ----------------------------------------
 
-=== Test with 4 threads ===
-Start time: 2025-06-25 13:53:32.312550693
-
+=== Test with 4 processes ===
+Start time: 2025-06-25 14:20:09.303380827
+[cn034.delta.ncsa.illinois.edu:17423] mca: base: components_register: registering framework ras components
+[cn034.delta.ncsa.illinois.edu:17423] mca: base: components_register: found loaded component simulator
+[cn034.delta.ncsa.illinois.edu:17423] mca: base: components_register: component simulator register function successful
+[cn034.delta.ncsa.illinois.edu:17423] mca: base: components_register: found loaded component slurm
+[cn034.delta.ncsa.illinois.edu:17423] mca: base: components_register: component slurm register function successful
+[cn034.delta.ncsa.illinois.edu:17423] mca: base: components_open: opening ras components
+[cn034.delta.ncsa.illinois.edu:17423] mca: base: components_open: found loaded component simulator
+[cn034.delta.ncsa.illinois.edu:17423] mca: base: components_open: found loaded component slurm
+[cn034.delta.ncsa.illinois.edu:17423] mca: base: components_open: component slurm open function successful
+[cn034.delta.ncsa.illinois.edu:17423] mca:base:select: Auto-selecting ras components
+[cn034.delta.ncsa.illinois.edu:17423] mca:base:select:(  ras) Querying component [simulator]
+[cn034.delta.ncsa.illinois.edu:17423] mca:base:select:(  ras) Querying component [slurm]
+[cn034.delta.ncsa.illinois.edu:17423] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[cn034.delta.ncsa.illinois.edu:17423] mca:base:select:(  ras) Selected component [slurm]
+[cn034.delta.ncsa.illinois.edu:17423] mca: base: close: unloading component simulator
+[cn034.delta.ncsa.illinois.edu:17423] mca: base: close: component slurm closed
+[cn034.delta.ncsa.illinois.edu:17423] mca: base: close: unloading component slurm
+End time: 2025-06-25 14:20:31.195120773
+Total wall clock time: 
 ======================   ALLOCATED NODES   ======================
-	cn062: flags=0x11 slots=4 max_slots=0 slots_inuse=0 state=UP
+	cn034: flags=0x11 slots=4 max_slots=0 slots_inuse=0 state=UP
 =================================================================
 Maximum iterations [100-4000]?
 Maximum iterations [100-4000]?
-
-Max error at iteration 0 was 100.000000
-Total time was 0.005120 seconds.
-Maximum iterations [100-4000]?
 Maximum iterations [100-4000]?
 
 Max error at iteration 0 was 100.000000
-Total time was 0.005032 seconds.
+Total time was 0.006821 seconds.
 
 Max error at iteration 0 was 100.000000
-Total time was 0.006076 seconds.
+Total time was 0.007908 seconds.
+Maximum iterations [100-4000]?
+
+Max error at iteration 0 was 100.000000
+Total time was 0.007612 seconds.
 ---------- Iteration number: 100 ------------
 [995,995]: 63.33  [996,996]: 72.67  [997,997]: 81.40  [998,998]: 88.97  [999,999]: 94.86  [1000,1000]: 98.67  
 ---------- Iteration number: 200 ------------
@@ -188,52 +206,28 @@ Total time was 0.006076 seconds.
 [995,995]: 97.66  [996,996]: 98.24  [997,997]: 98.75  [998,998]: 99.19  [999,999]: 99.56  [1000,1000]: 99.87  
 
 Max error at iteration 3372 was 0.009995
-Total time was 23.172864 seconds.
-End time: 2025-06-25 13:53:55.759853376
-Total wall clock time: [cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_register: registering framework ras components
-[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_register: found loaded component simulator
-[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_register: component simulator register function successful
-[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_register: found loaded component slurm
-[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_register: component slurm register function successful
-[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_open: opening ras components
-[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_open: found loaded component simulator
-[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_open: found loaded component slurm
-[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_open: component slurm open function successful
-[cn062.delta.ncsa.illinois.edu:3566725] mca:base:select: Auto-selecting ras components
-[cn062.delta.ncsa.illinois.edu:3566725] mca:base:select:(  ras) Querying component [simulator]
-[cn062.delta.ncsa.illinois.edu:3566725] mca:base:select:(  ras) Querying component [slurm]
-[cn062.delta.ncsa.illinois.edu:3566725] mca:base:select:(  ras) Query of component [slurm] set priority to 50
-[cn062.delta.ncsa.illinois.edu:3566725] mca:base:select:(  ras) Selected component [slurm]
-[cn062.delta.ncsa.illinois.edu:3566725] mca: base: close: unloading component simulator
-[cn062.delta.ncsa.illinois.edu:3566725] mca: base: close: component slurm closed
-[cn062.delta.ncsa.illinois.edu:3566725] mca: base: close: unloading component slurm
-23.442 seconds
+Total time was 21.628182 seconds.
+21.878 seconds
 ----------------------------------------
 
 !!!!STARTING MPI TEST!!!!
-=== Test with 1 threads ===
-Start time: 2025-06-25 13:53:56.771570959
-
-======================   ALLOCATED NODES   ======================
-	cn062: flags=0x11 slots=4 max_slots=0 slots_inuse=0 state=UP
-=================================================================
-This code must be run with 4 PEs
-End time: 2025-06-25 13:53:59.227331553
-Total wall clock time: [cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_register: registering framework ras components
-[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_register: found loaded component simulator
-[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_register: component simulator register function successful
-[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_register: found loaded component slurm
-[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_register: component slurm register function successful
-[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_open: opening ras components
-[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_open: found loaded component simulator
-[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_open: found loaded component slurm
-[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_open: component slurm open function successful
-[cn062.delta.ncsa.illinois.edu:3566804] mca:base:select: Auto-selecting ras components
-[cn062.delta.ncsa.illinois.edu:3566804] mca:base:select:(  ras) Querying component [simulator]
-[cn062.delta.ncsa.illinois.edu:3566804] mca:base:select:(  ras) Querying component [slurm]
-[cn062.delta.ncsa.illinois.edu:3566804] mca:base:select:(  ras) Query of component [slurm] set priority to 50
-[cn062.delta.ncsa.illinois.edu:3566804] mca:base:select:(  ras) Selected component [slurm]
-[cn062.delta.ncsa.illinois.edu:3566804] mca: base: close: unloading component simulator
+=== Test with 1 processes ===
+Start time: 2025-06-25 14:20:32.208041495
+[cn034.delta.ncsa.illinois.edu:17436] mca: base: components_register: registering framework ras components
+[cn034.delta.ncsa.illinois.edu:17436] mca: base: components_register: found loaded component simulator
+[cn034.delta.ncsa.illinois.edu:17436] mca: base: components_register: component simulator register function successful
+[cn034.delta.ncsa.illinois.edu:17436] mca: base: components_register: found loaded component slurm
+[cn034.delta.ncsa.illinois.edu:17436] mca: base: components_register: component slurm register function successful
+[cn034.delta.ncsa.illinois.edu:17436] mca: base: components_open: opening ras components
+[cn034.delta.ncsa.illinois.edu:17436] mca: base: components_open: found loaded component simulator
+[cn034.delta.ncsa.illinois.edu:17436] mca: base: components_open: found loaded component slurm
+[cn034.delta.ncsa.illinois.edu:17436] mca: base: components_open: component slurm open function successful
+[cn034.delta.ncsa.illinois.edu:17436] mca:base:select: Auto-selecting ras components
+[cn034.delta.ncsa.illinois.edu:17436] mca:base:select:(  ras) Querying component [simulator]
+[cn034.delta.ncsa.illinois.edu:17436] mca:base:select:(  ras) Querying component [slurm]
+[cn034.delta.ncsa.illinois.edu:17436] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[cn034.delta.ncsa.illinois.edu:17436] mca:base:select:(  ras) Selected component [slurm]
+[cn034.delta.ncsa.illinois.edu:17436] mca: base: close: unloading component simulator
 --------------------------------------------------------------------------
 Primary job  terminated normally, but 1 process returned
 a non-zero exit code. Per user-direction, the job has been aborted.
@@ -242,19 +236,43 @@ a non-zero exit code. Per user-direction, the job has been aborted.
 mpirun detected that one or more processes exited with non-zero status, thus causing
 the job to be terminated. The first process to do so was:
 
-  Process name: [[32108,1],0]
+  Process name: [[47462,1],0]
   Exit code:    1
 --------------------------------------------------------------------------
-[cn062.delta.ncsa.illinois.edu:3566804] mca: base: close: component slurm closed
-[cn062.delta.ncsa.illinois.edu:3566804] mca: base: close: unloading component slurm
-2.450 seconds
+[cn034.delta.ncsa.illinois.edu:17436] mca: base: close: component slurm closed
+[cn034.delta.ncsa.illinois.edu:17436] mca: base: close: unloading component slurm
+End time: 2025-06-25 14:20:34.590819048
+Total wall clock time: 
+======================   ALLOCATED NODES   ======================
+	cn034: flags=0x11 slots=4 max_slots=0 slots_inuse=0 state=UP
+=================================================================
+This code must be run with 4 PEs
+2.378 seconds
 ----------------------------------------
 
-=== Test with 4 threads ===
-Start time: 2025-06-25 13:54:00.241915855
-
+=== Test with 4 processes ===
+Start time: 2025-06-25 14:20:35.602046300
+[cn034.delta.ncsa.illinois.edu:17448] mca: base: components_register: registering framework ras components
+[cn034.delta.ncsa.illinois.edu:17448] mca: base: components_register: found loaded component simulator
+[cn034.delta.ncsa.illinois.edu:17448] mca: base: components_register: component simulator register function successful
+[cn034.delta.ncsa.illinois.edu:17448] mca: base: components_register: found loaded component slurm
+[cn034.delta.ncsa.illinois.edu:17448] mca: base: components_register: component slurm register function successful
+[cn034.delta.ncsa.illinois.edu:17448] mca: base: components_open: opening ras components
+[cn034.delta.ncsa.illinois.edu:17448] mca: base: components_open: found loaded component simulator
+[cn034.delta.ncsa.illinois.edu:17448] mca: base: components_open: found loaded component slurm
+[cn034.delta.ncsa.illinois.edu:17448] mca: base: components_open: component slurm open function successful
+[cn034.delta.ncsa.illinois.edu:17448] mca:base:select: Auto-selecting ras components
+[cn034.delta.ncsa.illinois.edu:17448] mca:base:select:(  ras) Querying component [simulator]
+[cn034.delta.ncsa.illinois.edu:17448] mca:base:select:(  ras) Querying component [slurm]
+[cn034.delta.ncsa.illinois.edu:17448] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[cn034.delta.ncsa.illinois.edu:17448] mca:base:select:(  ras) Selected component [slurm]
+[cn034.delta.ncsa.illinois.edu:17448] mca: base: close: unloading component simulator
+[cn034.delta.ncsa.illinois.edu:17448] mca: base: close: component slurm closed
+[cn034.delta.ncsa.illinois.edu:17448] mca: base: close: unloading component slurm
+End time: 2025-06-25 14:20:42.004182996
+Total wall clock time: 
 ======================   ALLOCATED NODES   ======================
-	cn062: flags=0x11 slots=4 max_slots=0 slots_inuse=0 state=UP
+	cn034: flags=0x11 slots=4 max_slots=0 slots_inuse=0 state=UP
 =================================================================
 Maximum iterations [100-4000]?
 ---------- Iteration number: 100 ------------
@@ -325,25 +343,7 @@ Maximum iterations [100-4000]?
 [995,995]: 97.66  [996,996]: 98.24  [997,997]: 98.75  [998,998]: 99.19  [999,999]: 99.56  [1000,1000]: 99.87  
 
 Max error at iteration 3372 was 0.009995
-Total time was 6.038964 seconds.
-End time: 2025-06-25 13:54:06.668272080
-Total wall clock time: [cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_register: registering framework ras components
-[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_register: found loaded component simulator
-[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_register: component simulator register function successful
-[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_register: found loaded component slurm
-[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_register: component slurm register function successful
-[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_open: opening ras components
-[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_open: found loaded component simulator
-[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_open: found loaded component slurm
-[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_open: component slurm open function successful
-[cn062.delta.ncsa.illinois.edu:3567023] mca:base:select: Auto-selecting ras components
-[cn062.delta.ncsa.illinois.edu:3567023] mca:base:select:(  ras) Querying component [simulator]
-[cn062.delta.ncsa.illinois.edu:3567023] mca:base:select:(  ras) Querying component [slurm]
-[cn062.delta.ncsa.illinois.edu:3567023] mca:base:select:(  ras) Query of component [slurm] set priority to 50
-[cn062.delta.ncsa.illinois.edu:3567023] mca:base:select:(  ras) Selected component [slurm]
-[cn062.delta.ncsa.illinois.edu:3567023] mca: base: close: unloading component simulator
-[cn062.delta.ncsa.illinois.edu:3567023] mca: base: close: component slurm closed
-[cn062.delta.ncsa.illinois.edu:3567023] mca: base: close: unloading component slurm
-6.421 seconds
+Total time was 6.016411 seconds.
+6.397 seconds
 ----------------------------------------
 

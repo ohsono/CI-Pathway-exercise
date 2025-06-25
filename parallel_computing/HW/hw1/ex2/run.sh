@@ -14,7 +14,7 @@ max_itr=4000
 # Clear previous results
 > ${output_file}
 
-
+export OMPI_MCA_mca_base_verbose=0
 # Grab multiple cores on a compute node
 #srun --account=becs-delta-cpu --partition=cpu-interactive --nodes=1 --tasks=4 --tasks-per-node=4 --pty bash
 
@@ -28,21 +28,19 @@ echo "=========================" >> ${output_file}
 # mpicc ./laplace_serial.c -o laplace_s.out
 # mpicc ./laplace_mpi.c -o laplace_m.out
 
-# Array of thread counts to test
-thread_counts=(1 4)
+# Array of process counts to test
+process_counts=(1 4)
 
 # First run tests for serial process
 echo "!!!!STARTING SERIAL process TEST!!!!"  >> ${output_file}
-for threads in "${thread_counts[@]}"
+for pc in "${process_counts[@]}"
 do
-    echo "Running with ${threads} threads..."
-    echo "=== Test with ${threads} threads ===" >> ${output_file}
+    echo "Running with ${pc} processes..."
+    echo "=== Test with ${pc} processes ===" >> ${output_file}
     echo "Start time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
     
-    # Set thread count and run program
-    export OMP_NUM_THREADS=${threads}
     TIMEFORMAT='%3R'
-    runtime=$( { time echo ${max_itr} | mpirun -n ${threads} laplace_s.out >> ${output_file}; } 2>&1 )
+    runtime=$( { time echo ${max_itr} | OMPI_MCA_mca_base_verbose=0 mpirun -n ${pc} laplace_s.out 2>> ${output_file}; } 2>&1 )
     
     echo "End time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
     echo "Total wall clock time: ${runtime} seconds" >> ${output_file}
@@ -57,16 +55,14 @@ echo "Serial Process: Testing complete. Results saved in ${output_file}"
 
 # First run tests for mpi process
 echo "!!!!STARTING MPI TEST!!!!"  >> ${output_file}
-for threads in "${thread_counts[@]}"
+for pc in "${process_counts[@]}"
 do
-    echo "Running with ${threads} threads..."
-    echo "=== Test with ${threads} threads ===" >> ${output_file}
+    echo "Running with ${pc} processes..."
+    echo "=== Test with ${pc} processes ===" >> ${output_file}
     echo "Start time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
     
-    # Set thread count and run program
-    export OMP_NUM_THREADS=${threads}
     TIMEFORMAT='%3R'
-    runtime=$( { time echo ${max_itr} | mpirun -n ${threads} laplace_m.out >> ${output_file}; } 2>&1 )
+    runtime=$( { time echo ${max_itr} | OMPI_MCA_mca_base_verbose=0 mpirun -n ${pc} laplace_m.out 2>> ${output_file}; } 2>&1 )
     
     echo "End time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
     echo "Total wall clock time: ${runtime} seconds" >> ${output_file}
