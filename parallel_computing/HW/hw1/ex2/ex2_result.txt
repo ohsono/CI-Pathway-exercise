@@ -1,0 +1,349 @@
+=== Basic System Info ===
+Date: Wed Jun 25 13:53:09 CDT 2025
+System: Linux cn062.delta.ncsa.illinois.edu 4.18.0-477.95.1.el8_8.x86_64 #1 SMP Fri Apr 11 09:50:48 EDT 2025 x86_64 x86_64 x86_64 GNU/Linux
+CPU Info: AMD EPYC 7763 64-Core Processor
+=========================
+!!!!STARTING SERIAL process TEST!!!!
+=== Test with 1 threads ===
+Start time: 2025-06-25 13:53:09.127397216
+
+======================   ALLOCATED NODES   ======================
+	cn062: flags=0x11 slots=4 max_slots=0 slots_inuse=0 state=UP
+=================================================================
+Maximum iterations [100-4000]?
+---------- Iteration number: 100 ------------
+[995,995]: 63.33  [996,996]: 72.67  [997,997]: 81.40  [998,998]: 88.97  [999,999]: 94.86  [1000,1000]: 98.67  
+---------- Iteration number: 200 ------------
+[995,995]: 79.11  [996,996]: 84.86  [997,997]: 89.91  [998,998]: 94.10  [999,999]: 97.26  [1000,1000]: 99.28  
+---------- Iteration number: 300 ------------
+[995,995]: 85.25  [996,996]: 89.39  [997,997]: 92.96  [998,998]: 95.88  [999,999]: 98.07  [1000,1000]: 99.49  
+---------- Iteration number: 400 ------------
+[995,995]: 88.50  [996,996]: 91.75  [997,997]: 94.52  [998,998]: 96.78  [999,999]: 98.48  [1000,1000]: 99.59  
+---------- Iteration number: 500 ------------
+[995,995]: 90.52  [996,996]: 93.19  [997,997]: 95.47  [998,998]: 97.33  [999,999]: 98.73  [1000,1000]: 99.66  
+---------- Iteration number: 600 ------------
+[995,995]: 91.88  [996,996]: 94.17  [997,997]: 96.11  [998,998]: 97.69  [999,999]: 98.89  [1000,1000]: 99.70  
+---------- Iteration number: 700 ------------
+[995,995]: 92.87  [996,996]: 94.87  [997,997]: 96.57  [998,998]: 97.95  [999,999]: 99.01  [1000,1000]: 99.73  
+---------- Iteration number: 800 ------------
+[995,995]: 93.62  [996,996]: 95.40  [997,997]: 96.91  [998,998]: 98.15  [999,999]: 99.10  [1000,1000]: 99.75  
+---------- Iteration number: 900 ------------
+[995,995]: 94.21  [996,996]: 95.81  [997,997]: 97.18  [998,998]: 98.30  [999,999]: 99.17  [1000,1000]: 99.77  
+---------- Iteration number: 1000 ------------
+[995,995]: 94.68  [996,996]: 96.15  [997,997]: 97.40  [998,998]: 98.42  [999,999]: 99.22  [1000,1000]: 99.78  
+---------- Iteration number: 1100 ------------
+[995,995]: 95.06  [996,996]: 96.42  [997,997]: 97.57  [998,998]: 98.52  [999,999]: 99.27  [1000,1000]: 99.79  
+---------- Iteration number: 1200 ------------
+[995,995]: 95.39  [996,996]: 96.64  [997,997]: 97.72  [998,998]: 98.61  [999,999]: 99.30  [1000,1000]: 99.80  
+---------- Iteration number: 1300 ------------
+[995,995]: 95.66  [996,996]: 96.84  [997,997]: 97.84  [998,998]: 98.68  [999,999]: 99.33  [1000,1000]: 99.81  
+---------- Iteration number: 1400 ------------
+[995,995]: 95.90  [996,996]: 97.00  [997,997]: 97.95  [998,998]: 98.74  [999,999]: 99.36  [1000,1000]: 99.82  
+---------- Iteration number: 1500 ------------
+[995,995]: 96.10  [996,996]: 97.15  [997,997]: 98.04  [998,998]: 98.79  [999,999]: 99.38  [1000,1000]: 99.82  
+---------- Iteration number: 1600 ------------
+[995,995]: 96.28  [996,996]: 97.27  [997,997]: 98.12  [998,998]: 98.84  [999,999]: 99.40  [1000,1000]: 99.83  
+---------- Iteration number: 1700 ------------
+[995,995]: 96.44  [996,996]: 97.38  [997,997]: 98.20  [998,998]: 98.88  [999,999]: 99.42  [1000,1000]: 99.83  
+---------- Iteration number: 1800 ------------
+[995,995]: 96.58  [996,996]: 97.48  [997,997]: 98.26  [998,998]: 98.91  [999,999]: 99.44  [1000,1000]: 99.83  
+---------- Iteration number: 1900 ------------
+[995,995]: 96.70  [996,996]: 97.57  [997,997]: 98.32  [998,998]: 98.94  [999,999]: 99.45  [1000,1000]: 99.84  
+---------- Iteration number: 2000 ------------
+[995,995]: 96.81  [996,996]: 97.65  [997,997]: 98.37  [998,998]: 98.97  [999,999]: 99.47  [1000,1000]: 99.84  
+---------- Iteration number: 2100 ------------
+[995,995]: 96.92  [996,996]: 97.72  [997,997]: 98.41  [998,998]: 99.00  [999,999]: 99.48  [1000,1000]: 99.84  
+---------- Iteration number: 2200 ------------
+[995,995]: 97.01  [996,996]: 97.78  [997,997]: 98.45  [998,998]: 99.02  [999,999]: 99.49  [1000,1000]: 99.85  
+---------- Iteration number: 2300 ------------
+[995,995]: 97.09  [996,996]: 97.84  [997,997]: 98.49  [998,998]: 99.05  [999,999]: 99.50  [1000,1000]: 99.85  
+---------- Iteration number: 2400 ------------
+[995,995]: 97.17  [996,996]: 97.90  [997,997]: 98.53  [998,998]: 99.06  [999,999]: 99.51  [1000,1000]: 99.85  
+---------- Iteration number: 2500 ------------
+[995,995]: 97.24  [996,996]: 97.95  [997,997]: 98.56  [998,998]: 99.08  [999,999]: 99.51  [1000,1000]: 99.85  
+---------- Iteration number: 2600 ------------
+[995,995]: 97.31  [996,996]: 97.99  [997,997]: 98.59  [998,998]: 99.10  [999,999]: 99.52  [1000,1000]: 99.86  
+---------- Iteration number: 2700 ------------
+[995,995]: 97.37  [996,996]: 98.04  [997,997]: 98.62  [998,998]: 99.12  [999,999]: 99.53  [1000,1000]: 99.86  
+---------- Iteration number: 2800 ------------
+[995,995]: 97.43  [996,996]: 98.08  [997,997]: 98.64  [998,998]: 99.13  [999,999]: 99.54  [1000,1000]: 99.86  
+---------- Iteration number: 2900 ------------
+[995,995]: 97.48  [996,996]: 98.11  [997,997]: 98.67  [998,998]: 99.14  [999,999]: 99.54  [1000,1000]: 99.86  
+---------- Iteration number: 3000 ------------
+[995,995]: 97.53  [996,996]: 98.15  [997,997]: 98.69  [998,998]: 99.16  [999,999]: 99.55  [1000,1000]: 99.86  
+---------- Iteration number: 3100 ------------
+[995,995]: 97.58  [996,996]: 98.18  [997,997]: 98.71  [998,998]: 99.17  [999,999]: 99.55  [1000,1000]: 99.86  
+---------- Iteration number: 3200 ------------
+[995,995]: 97.62  [996,996]: 98.21  [997,997]: 98.73  [998,998]: 99.18  [999,999]: 99.56  [1000,1000]: 99.86  
+---------- Iteration number: 3300 ------------
+[995,995]: 97.66  [996,996]: 98.24  [997,997]: 98.75  [998,998]: 99.19  [999,999]: 99.56  [1000,1000]: 99.87  
+
+Max error at iteration 3372 was 0.009995
+Total time was 21.937483 seconds.
+End time: 2025-06-25 13:53:31.301773558
+Total wall clock time: [cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_register: registering framework ras components
+[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_register: found loaded component simulator
+[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_register: component simulator register function successful
+[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_register: found loaded component slurm
+[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_register: component slurm register function successful
+[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_open: opening ras components
+[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_open: found loaded component simulator
+[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_open: found loaded component slurm
+[cn062.delta.ncsa.illinois.edu:3566715] mca: base: components_open: component slurm open function successful
+[cn062.delta.ncsa.illinois.edu:3566715] mca:base:select: Auto-selecting ras components
+[cn062.delta.ncsa.illinois.edu:3566715] mca:base:select:(  ras) Querying component [simulator]
+[cn062.delta.ncsa.illinois.edu:3566715] mca:base:select:(  ras) Querying component [slurm]
+[cn062.delta.ncsa.illinois.edu:3566715] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[cn062.delta.ncsa.illinois.edu:3566715] mca:base:select:(  ras) Selected component [slurm]
+[cn062.delta.ncsa.illinois.edu:3566715] mca: base: close: unloading component simulator
+[cn062.delta.ncsa.illinois.edu:3566715] mca: base: close: component slurm closed
+[cn062.delta.ncsa.illinois.edu:3566715] mca: base: close: unloading component slurm
+22.166 seconds
+----------------------------------------
+
+=== Test with 4 threads ===
+Start time: 2025-06-25 13:53:32.312550693
+
+======================   ALLOCATED NODES   ======================
+	cn062: flags=0x11 slots=4 max_slots=0 slots_inuse=0 state=UP
+=================================================================
+Maximum iterations [100-4000]?
+Maximum iterations [100-4000]?
+
+Max error at iteration 0 was 100.000000
+Total time was 0.005120 seconds.
+Maximum iterations [100-4000]?
+Maximum iterations [100-4000]?
+
+Max error at iteration 0 was 100.000000
+Total time was 0.005032 seconds.
+
+Max error at iteration 0 was 100.000000
+Total time was 0.006076 seconds.
+---------- Iteration number: 100 ------------
+[995,995]: 63.33  [996,996]: 72.67  [997,997]: 81.40  [998,998]: 88.97  [999,999]: 94.86  [1000,1000]: 98.67  
+---------- Iteration number: 200 ------------
+[995,995]: 79.11  [996,996]: 84.86  [997,997]: 89.91  [998,998]: 94.10  [999,999]: 97.26  [1000,1000]: 99.28  
+---------- Iteration number: 300 ------------
+[995,995]: 85.25  [996,996]: 89.39  [997,997]: 92.96  [998,998]: 95.88  [999,999]: 98.07  [1000,1000]: 99.49  
+---------- Iteration number: 400 ------------
+[995,995]: 88.50  [996,996]: 91.75  [997,997]: 94.52  [998,998]: 96.78  [999,999]: 98.48  [1000,1000]: 99.59  
+---------- Iteration number: 500 ------------
+[995,995]: 90.52  [996,996]: 93.19  [997,997]: 95.47  [998,998]: 97.33  [999,999]: 98.73  [1000,1000]: 99.66  
+---------- Iteration number: 600 ------------
+[995,995]: 91.88  [996,996]: 94.17  [997,997]: 96.11  [998,998]: 97.69  [999,999]: 98.89  [1000,1000]: 99.70  
+---------- Iteration number: 700 ------------
+[995,995]: 92.87  [996,996]: 94.87  [997,997]: 96.57  [998,998]: 97.95  [999,999]: 99.01  [1000,1000]: 99.73  
+---------- Iteration number: 800 ------------
+[995,995]: 93.62  [996,996]: 95.40  [997,997]: 96.91  [998,998]: 98.15  [999,999]: 99.10  [1000,1000]: 99.75  
+---------- Iteration number: 900 ------------
+[995,995]: 94.21  [996,996]: 95.81  [997,997]: 97.18  [998,998]: 98.30  [999,999]: 99.17  [1000,1000]: 99.77  
+---------- Iteration number: 1000 ------------
+[995,995]: 94.68  [996,996]: 96.15  [997,997]: 97.40  [998,998]: 98.42  [999,999]: 99.22  [1000,1000]: 99.78  
+---------- Iteration number: 1100 ------------
+[995,995]: 95.06  [996,996]: 96.42  [997,997]: 97.57  [998,998]: 98.52  [999,999]: 99.27  [1000,1000]: 99.79  
+---------- Iteration number: 1200 ------------
+[995,995]: 95.39  [996,996]: 96.64  [997,997]: 97.72  [998,998]: 98.61  [999,999]: 99.30  [1000,1000]: 99.80  
+---------- Iteration number: 1300 ------------
+[995,995]: 95.66  [996,996]: 96.84  [997,997]: 97.84  [998,998]: 98.68  [999,999]: 99.33  [1000,1000]: 99.81  
+---------- Iteration number: 1400 ------------
+[995,995]: 95.90  [996,996]: 97.00  [997,997]: 97.95  [998,998]: 98.74  [999,999]: 99.36  [1000,1000]: 99.82  
+---------- Iteration number: 1500 ------------
+[995,995]: 96.10  [996,996]: 97.15  [997,997]: 98.04  [998,998]: 98.79  [999,999]: 99.38  [1000,1000]: 99.82  
+---------- Iteration number: 1600 ------------
+[995,995]: 96.28  [996,996]: 97.27  [997,997]: 98.12  [998,998]: 98.84  [999,999]: 99.40  [1000,1000]: 99.83  
+---------- Iteration number: 1700 ------------
+[995,995]: 96.44  [996,996]: 97.38  [997,997]: 98.20  [998,998]: 98.88  [999,999]: 99.42  [1000,1000]: 99.83  
+---------- Iteration number: 1800 ------------
+[995,995]: 96.58  [996,996]: 97.48  [997,997]: 98.26  [998,998]: 98.91  [999,999]: 99.44  [1000,1000]: 99.83  
+---------- Iteration number: 1900 ------------
+[995,995]: 96.70  [996,996]: 97.57  [997,997]: 98.32  [998,998]: 98.94  [999,999]: 99.45  [1000,1000]: 99.84  
+---------- Iteration number: 2000 ------------
+[995,995]: 96.81  [996,996]: 97.65  [997,997]: 98.37  [998,998]: 98.97  [999,999]: 99.47  [1000,1000]: 99.84  
+---------- Iteration number: 2100 ------------
+[995,995]: 96.92  [996,996]: 97.72  [997,997]: 98.41  [998,998]: 99.00  [999,999]: 99.48  [1000,1000]: 99.84  
+---------- Iteration number: 2200 ------------
+[995,995]: 97.01  [996,996]: 97.78  [997,997]: 98.45  [998,998]: 99.02  [999,999]: 99.49  [1000,1000]: 99.85  
+---------- Iteration number: 2300 ------------
+[995,995]: 97.09  [996,996]: 97.84  [997,997]: 98.49  [998,998]: 99.05  [999,999]: 99.50  [1000,1000]: 99.85  
+---------- Iteration number: 2400 ------------
+[995,995]: 97.17  [996,996]: 97.90  [997,997]: 98.53  [998,998]: 99.06  [999,999]: 99.51  [1000,1000]: 99.85  
+---------- Iteration number: 2500 ------------
+[995,995]: 97.24  [996,996]: 97.95  [997,997]: 98.56  [998,998]: 99.08  [999,999]: 99.51  [1000,1000]: 99.85  
+---------- Iteration number: 2600 ------------
+[995,995]: 97.31  [996,996]: 97.99  [997,997]: 98.59  [998,998]: 99.10  [999,999]: 99.52  [1000,1000]: 99.86  
+---------- Iteration number: 2700 ------------
+[995,995]: 97.37  [996,996]: 98.04  [997,997]: 98.62  [998,998]: 99.12  [999,999]: 99.53  [1000,1000]: 99.86  
+---------- Iteration number: 2800 ------------
+[995,995]: 97.43  [996,996]: 98.08  [997,997]: 98.64  [998,998]: 99.13  [999,999]: 99.54  [1000,1000]: 99.86  
+---------- Iteration number: 2900 ------------
+[995,995]: 97.48  [996,996]: 98.11  [997,997]: 98.67  [998,998]: 99.14  [999,999]: 99.54  [1000,1000]: 99.86  
+---------- Iteration number: 3000 ------------
+[995,995]: 97.53  [996,996]: 98.15  [997,997]: 98.69  [998,998]: 99.16  [999,999]: 99.55  [1000,1000]: 99.86  
+---------- Iteration number: 3100 ------------
+[995,995]: 97.58  [996,996]: 98.18  [997,997]: 98.71  [998,998]: 99.17  [999,999]: 99.55  [1000,1000]: 99.86  
+---------- Iteration number: 3200 ------------
+[995,995]: 97.62  [996,996]: 98.21  [997,997]: 98.73  [998,998]: 99.18  [999,999]: 99.56  [1000,1000]: 99.86  
+---------- Iteration number: 3300 ------------
+[995,995]: 97.66  [996,996]: 98.24  [997,997]: 98.75  [998,998]: 99.19  [999,999]: 99.56  [1000,1000]: 99.87  
+
+Max error at iteration 3372 was 0.009995
+Total time was 23.172864 seconds.
+End time: 2025-06-25 13:53:55.759853376
+Total wall clock time: [cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_register: registering framework ras components
+[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_register: found loaded component simulator
+[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_register: component simulator register function successful
+[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_register: found loaded component slurm
+[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_register: component slurm register function successful
+[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_open: opening ras components
+[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_open: found loaded component simulator
+[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_open: found loaded component slurm
+[cn062.delta.ncsa.illinois.edu:3566725] mca: base: components_open: component slurm open function successful
+[cn062.delta.ncsa.illinois.edu:3566725] mca:base:select: Auto-selecting ras components
+[cn062.delta.ncsa.illinois.edu:3566725] mca:base:select:(  ras) Querying component [simulator]
+[cn062.delta.ncsa.illinois.edu:3566725] mca:base:select:(  ras) Querying component [slurm]
+[cn062.delta.ncsa.illinois.edu:3566725] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[cn062.delta.ncsa.illinois.edu:3566725] mca:base:select:(  ras) Selected component [slurm]
+[cn062.delta.ncsa.illinois.edu:3566725] mca: base: close: unloading component simulator
+[cn062.delta.ncsa.illinois.edu:3566725] mca: base: close: component slurm closed
+[cn062.delta.ncsa.illinois.edu:3566725] mca: base: close: unloading component slurm
+23.442 seconds
+----------------------------------------
+
+!!!!STARTING MPI TEST!!!!
+=== Test with 1 threads ===
+Start time: 2025-06-25 13:53:56.771570959
+
+======================   ALLOCATED NODES   ======================
+	cn062: flags=0x11 slots=4 max_slots=0 slots_inuse=0 state=UP
+=================================================================
+This code must be run with 4 PEs
+End time: 2025-06-25 13:53:59.227331553
+Total wall clock time: [cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_register: registering framework ras components
+[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_register: found loaded component simulator
+[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_register: component simulator register function successful
+[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_register: found loaded component slurm
+[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_register: component slurm register function successful
+[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_open: opening ras components
+[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_open: found loaded component simulator
+[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_open: found loaded component slurm
+[cn062.delta.ncsa.illinois.edu:3566804] mca: base: components_open: component slurm open function successful
+[cn062.delta.ncsa.illinois.edu:3566804] mca:base:select: Auto-selecting ras components
+[cn062.delta.ncsa.illinois.edu:3566804] mca:base:select:(  ras) Querying component [simulator]
+[cn062.delta.ncsa.illinois.edu:3566804] mca:base:select:(  ras) Querying component [slurm]
+[cn062.delta.ncsa.illinois.edu:3566804] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[cn062.delta.ncsa.illinois.edu:3566804] mca:base:select:(  ras) Selected component [slurm]
+[cn062.delta.ncsa.illinois.edu:3566804] mca: base: close: unloading component simulator
+--------------------------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code. Per user-direction, the job has been aborted.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+mpirun detected that one or more processes exited with non-zero status, thus causing
+the job to be terminated. The first process to do so was:
+
+  Process name: [[32108,1],0]
+  Exit code:    1
+--------------------------------------------------------------------------
+[cn062.delta.ncsa.illinois.edu:3566804] mca: base: close: component slurm closed
+[cn062.delta.ncsa.illinois.edu:3566804] mca: base: close: unloading component slurm
+2.450 seconds
+----------------------------------------
+
+=== Test with 4 threads ===
+Start time: 2025-06-25 13:54:00.241915855
+
+======================   ALLOCATED NODES   ======================
+	cn062: flags=0x11 slots=4 max_slots=0 slots_inuse=0 state=UP
+=================================================================
+Maximum iterations [100-4000]?
+---------- Iteration number: 100 ------------
+[995,995]: 63.33  [996,996]: 72.67  [997,997]: 81.40  [998,998]: 88.97  [999,999]: 94.86  [1000,1000]: 98.67  
+---------- Iteration number: 200 ------------
+[995,995]: 79.11  [996,996]: 84.86  [997,997]: 89.91  [998,998]: 94.10  [999,999]: 97.26  [1000,1000]: 99.28  
+---------- Iteration number: 300 ------------
+[995,995]: 85.25  [996,996]: 89.39  [997,997]: 92.96  [998,998]: 95.88  [999,999]: 98.07  [1000,1000]: 99.49  
+---------- Iteration number: 400 ------------
+[995,995]: 88.50  [996,996]: 91.75  [997,997]: 94.52  [998,998]: 96.78  [999,999]: 98.48  [1000,1000]: 99.59  
+---------- Iteration number: 500 ------------
+[995,995]: 90.52  [996,996]: 93.19  [997,997]: 95.47  [998,998]: 97.33  [999,999]: 98.73  [1000,1000]: 99.66  
+---------- Iteration number: 600 ------------
+[995,995]: 91.88  [996,996]: 94.17  [997,997]: 96.11  [998,998]: 97.69  [999,999]: 98.89  [1000,1000]: 99.70  
+---------- Iteration number: 700 ------------
+[995,995]: 92.87  [996,996]: 94.87  [997,997]: 96.57  [998,998]: 97.95  [999,999]: 99.01  [1000,1000]: 99.73  
+---------- Iteration number: 800 ------------
+[995,995]: 93.62  [996,996]: 95.40  [997,997]: 96.91  [998,998]: 98.15  [999,999]: 99.10  [1000,1000]: 99.75  
+---------- Iteration number: 900 ------------
+[995,995]: 94.21  [996,996]: 95.81  [997,997]: 97.18  [998,998]: 98.30  [999,999]: 99.17  [1000,1000]: 99.77  
+---------- Iteration number: 1000 ------------
+[995,995]: 94.68  [996,996]: 96.15  [997,997]: 97.40  [998,998]: 98.42  [999,999]: 99.22  [1000,1000]: 99.78  
+---------- Iteration number: 1100 ------------
+[995,995]: 95.06  [996,996]: 96.42  [997,997]: 97.57  [998,998]: 98.52  [999,999]: 99.27  [1000,1000]: 99.79  
+---------- Iteration number: 1200 ------------
+[995,995]: 95.39  [996,996]: 96.64  [997,997]: 97.72  [998,998]: 98.61  [999,999]: 99.30  [1000,1000]: 99.80  
+---------- Iteration number: 1300 ------------
+[995,995]: 95.66  [996,996]: 96.84  [997,997]: 97.84  [998,998]: 98.68  [999,999]: 99.33  [1000,1000]: 99.81  
+---------- Iteration number: 1400 ------------
+[995,995]: 95.90  [996,996]: 97.00  [997,997]: 97.95  [998,998]: 98.74  [999,999]: 99.36  [1000,1000]: 99.82  
+---------- Iteration number: 1500 ------------
+[995,995]: 96.10  [996,996]: 97.15  [997,997]: 98.04  [998,998]: 98.79  [999,999]: 99.38  [1000,1000]: 99.82  
+---------- Iteration number: 1600 ------------
+[995,995]: 96.28  [996,996]: 97.27  [997,997]: 98.12  [998,998]: 98.84  [999,999]: 99.40  [1000,1000]: 99.83  
+---------- Iteration number: 1700 ------------
+[995,995]: 96.44  [996,996]: 97.38  [997,997]: 98.20  [998,998]: 98.88  [999,999]: 99.42  [1000,1000]: 99.83  
+---------- Iteration number: 1800 ------------
+[995,995]: 96.58  [996,996]: 97.48  [997,997]: 98.26  [998,998]: 98.91  [999,999]: 99.44  [1000,1000]: 99.83  
+---------- Iteration number: 1900 ------------
+[995,995]: 96.70  [996,996]: 97.57  [997,997]: 98.32  [998,998]: 98.94  [999,999]: 99.45  [1000,1000]: 99.84  
+---------- Iteration number: 2000 ------------
+[995,995]: 96.81  [996,996]: 97.65  [997,997]: 98.37  [998,998]: 98.97  [999,999]: 99.47  [1000,1000]: 99.84  
+---------- Iteration number: 2100 ------------
+[995,995]: 96.92  [996,996]: 97.72  [997,997]: 98.41  [998,998]: 99.00  [999,999]: 99.48  [1000,1000]: 99.84  
+---------- Iteration number: 2200 ------------
+[995,995]: 97.01  [996,996]: 97.78  [997,997]: 98.45  [998,998]: 99.02  [999,999]: 99.49  [1000,1000]: 99.85  
+---------- Iteration number: 2300 ------------
+[995,995]: 97.09  [996,996]: 97.84  [997,997]: 98.49  [998,998]: 99.05  [999,999]: 99.50  [1000,1000]: 99.85  
+---------- Iteration number: 2400 ------------
+[995,995]: 97.17  [996,996]: 97.90  [997,997]: 98.53  [998,998]: 99.06  [999,999]: 99.51  [1000,1000]: 99.85  
+---------- Iteration number: 2500 ------------
+[995,995]: 97.24  [996,996]: 97.95  [997,997]: 98.56  [998,998]: 99.08  [999,999]: 99.51  [1000,1000]: 99.85  
+---------- Iteration number: 2600 ------------
+[995,995]: 97.31  [996,996]: 97.99  [997,997]: 98.59  [998,998]: 99.10  [999,999]: 99.52  [1000,1000]: 99.86  
+---------- Iteration number: 2700 ------------
+[995,995]: 97.37  [996,996]: 98.04  [997,997]: 98.62  [998,998]: 99.12  [999,999]: 99.53  [1000,1000]: 99.86  
+---------- Iteration number: 2800 ------------
+[995,995]: 97.43  [996,996]: 98.08  [997,997]: 98.64  [998,998]: 99.13  [999,999]: 99.54  [1000,1000]: 99.86  
+---------- Iteration number: 2900 ------------
+[995,995]: 97.48  [996,996]: 98.11  [997,997]: 98.67  [998,998]: 99.14  [999,999]: 99.54  [1000,1000]: 99.86  
+---------- Iteration number: 3000 ------------
+[995,995]: 97.53  [996,996]: 98.15  [997,997]: 98.69  [998,998]: 99.16  [999,999]: 99.55  [1000,1000]: 99.86  
+---------- Iteration number: 3100 ------------
+[995,995]: 97.58  [996,996]: 98.18  [997,997]: 98.71  [998,998]: 99.17  [999,999]: 99.55  [1000,1000]: 99.86  
+---------- Iteration number: 3200 ------------
+[995,995]: 97.62  [996,996]: 98.21  [997,997]: 98.73  [998,998]: 99.18  [999,999]: 99.56  [1000,1000]: 99.86  
+---------- Iteration number: 3300 ------------
+[995,995]: 97.66  [996,996]: 98.24  [997,997]: 98.75  [998,998]: 99.19  [999,999]: 99.56  [1000,1000]: 99.87  
+
+Max error at iteration 3372 was 0.009995
+Total time was 6.038964 seconds.
+End time: 2025-06-25 13:54:06.668272080
+Total wall clock time: [cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_register: registering framework ras components
+[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_register: found loaded component simulator
+[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_register: component simulator register function successful
+[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_register: found loaded component slurm
+[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_register: component slurm register function successful
+[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_open: opening ras components
+[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_open: found loaded component simulator
+[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_open: found loaded component slurm
+[cn062.delta.ncsa.illinois.edu:3567023] mca: base: components_open: component slurm open function successful
+[cn062.delta.ncsa.illinois.edu:3567023] mca:base:select: Auto-selecting ras components
+[cn062.delta.ncsa.illinois.edu:3567023] mca:base:select:(  ras) Querying component [simulator]
+[cn062.delta.ncsa.illinois.edu:3567023] mca:base:select:(  ras) Querying component [slurm]
+[cn062.delta.ncsa.illinois.edu:3567023] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[cn062.delta.ncsa.illinois.edu:3567023] mca:base:select:(  ras) Selected component [slurm]
+[cn062.delta.ncsa.illinois.edu:3567023] mca: base: close: unloading component simulator
+[cn062.delta.ncsa.illinois.edu:3567023] mca: base: close: component slurm closed
+[cn062.delta.ncsa.illinois.edu:3567023] mca: base: close: unloading component slurm
+6.421 seconds
+----------------------------------------
+
