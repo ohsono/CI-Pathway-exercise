@@ -1,0 +1,39 @@
+
+
+\definecolor{LLblue}{rgb}{0.153,0.455,0.682}
+\definecolor{LLgold}{rgb}{1,0.82,0}
+\definecolor{LLdarkestBlue}{rgb}{0,0.231,0.361}
+\definecolor{LLdarkerBlue}{rgb}{0,0.333,0.529}
+\definecolor{LLlighterBlue}{rgb}{0.545,0.722,0.91}
+\definecolor{LLlightestBlue}{rgb}{0.855,0.922,0.996}
+\definecolor{LLdarkestGold}{rgb}{1,0.722,0.11}
+\definecolor{LLdarkerGold}{rgb}{1,0.78,0.173}
+\definecolor{LLflagGreen}{HTML}{4C8944}
+\definecolor{LLflagYellow}{rgb}{1,0.82,0}
+\definecolor{LLflagRed}{HTML}{C41B2D}
+\definecolor{LLdarkGray}{rgb}{0.2, 0.2, 0.2}
+\definecolor{LLmediumGray}{rgb}{0.4, 0.4, 0.4}
+\definecolor{LLdarkGreen}{rgb}{0.0, 0.3, 0.0}
+\definecolor{LLemerald}{HTML}{50C878}
+
+
+\lstdefinestyle{dm4ds_lstCustom_01}{
+    language=R,
+    basicstyle=\footnotesize\ttfamily\bfseries,
+    %basicstyle=\footnotesize\courier,
+    breaklines=true,
+     alsoletter={_},
+    %stringstyle=\color{LLdarkestBlue},
+     %stringstyle=\color{LLdarkerGold},
+     %stringstyle=\color{Emerald}\ttfamily
+     stringstyle=\color{LLemerald}\ttfamily,
+    %otherkeywords={0,1,2,3,4,5,6,7,8,9},
+    otherkeywords={!,!=,~,$,\&,\%/\%,\%*\%,\%\%,<-,<<-},
+    morekeywords={TRUE,FALSE, data.frame, as.data.frame, xtable, writeLines},
+    %deletekeywords={data,frame,length,as,character},
+    deletekeywords={include.rownames},
+    keywordstyle=\color{LLblue}\bfseries,
+    commentstyle=\color{LLmediumGray}
+}
+
+

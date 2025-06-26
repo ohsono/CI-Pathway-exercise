@@ -1,7 +1,9 @@
-%\documentclass[11pt]{book}
 \documentclass[11pt]{article}
 \usepackage{graphicx}
 \usepackage{amssymb}
+%\usepackage{booktabs}
+\usepackage{array}
+\usepackage[utf8]{inputenc}
 
 
 
@@ -58,6 +60,10 @@
 \usepackage{makeidx}
 
 \usepackage{listings}
+\lstdefinestyle{dm4ds_lstCustom_01}{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true
+}
 \input{_latexFormatting_01.tex}
 
 
@@ -186,6 +192,54 @@ UCLA, Statistics\\Hochan Son\\Summer 2025\\
 
 
 
+\section{Introduction}
+This analysis evaluates parallel computing performance using the Laplace equation solver as a benchmark. The study compares four implementation approaches across varying thread/process counts to assess scalability and efficiency characteristics.
+
+\section{Hardware Environment}
+
+\subsection{System Specifications}
+
+\begin{table}[H]
+\centering
+\caption{NCSA Delta Compute Environment}
+\label{tab:system_specs}
+\begin{tabular}{@{}ll@{}}
+\hline
+\textbf{Component} & \textbf{Specification} \\
+\hline
+Compute Platform & NCSA Delta HPC Cluster \\
+Login Node & dt-login04.delta.ncsa.illinois.edu \\
+Compute Node & cn034.delta.ncsa.illinois.edu \\
+Operating System & Linux 4.18.0-477.95.1.el8\_8.x86\_64 \\
+Distribution & Red Hat Enterprise Linux 8 \\
+Architecture & x86\_64 \\
+Node Interconnect & HPE Slingshot \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Processor Architecture}
+
+\begin{table}[H]
+\centering
+\caption{AMD EPYC 7763 Processor Specifications}
+\label{tab:processor_specs}
+\begin{tabular}{@{}ll@{}}
+\hline
+\textbf{Parameter} & \textbf{Value} \\
+\hline
+CPU Model & AMD EPYC 7763 64-Core Processor \\
+Architecture & AMD Zen 3 (Milan) \\
+Physical Cores & 64 per socket \\
+Hardware Threads & 128 (2-way SMT) \\
+Base Clock & 2.45 GHz \\
+Boost Clock & Up to 3.5 GHz \\
+Manufacturing Process & 7nm TSMC \\
+Socket Type & SP3 \\
+\hline
+\end{tabular}
+\end{table}
 
 
 
@@ -275,17 +329,17 @@ will be made clear in our following modules.
 
 
 
-\section {Solution}
+\section {Solutions: OpenMP and MPI Performance Analysis}
 
-\begin{enumerate}
-  \item{ The purpose of this exerise to measure the differeneces how the parallelism benefits the speed of the execution by distributed computation over multiple cpu cores. I've done few observations.
+\subsection {Serial, OpenMP, and Enhanced Parallel Processing}
+  The purpose of this exerise to measure the differeneces how the parallelism benefits the speed of the execution by distributed computation over multiple cpu cores. I've done few observations.
   1. varying threads (1,8, and 32) on \texttt{OMP\_NUM\_THREADS} counts. 
   2. varying techniques such as serial, openmp, and red-black (checkerboard algorithm) by complier tuning. 
-  The result of the operation is as below tables. \ref{tab:performance_comparison}\\
+  The performance evaluation reveals significant differences across parallelization approaches, as summarized in the following tables.\\
   Each of the process has completed with 1,8, and 32 threads. It has shown that the serial process has no performance improvement across threads counts. The OpenMP has shown good performance. Although Enhanced Parallel test with red-black checker board algorithm has the best outcome at threads=32. 
   However, the efficiency on 32 threads has decreasing. As thread count increases, efficiency typically decreases due to parallel overhead, communication costs, and workload imbalances.
 
-  \begin{table}[htbp]
+  \begin{table}[H]
   \centering
   \caption{Parallel Processing Performance Comparison}
   \label{tab:performance_comparison}
@@ -312,7 +366,8 @@ will be made clear in our following modules.
   \begin{itemize}
     \item \textbf{Serial Test}: Shows no parallelization benefit, confirming serial execution regardless of thread count.
     
-    \item \textbf{OpenMP Implementation}: Demonstrates significant speedup with increasing thread count:
+    \item \textbf{OpenMP Implementation}: 
+    \\Demonstrates significant speedup with increasing thread count:
       \begin{itemize}
       \item 8 threads: 5.21$\times$ speedup (65.1\% efficiency)
       \item 32 threads: 10.91$\times$ speedup (34.1\% efficiency)
@@ -329,19 +384,83 @@ will be made clear in our following modules.
     \item \textbf{Efficiency Analysis}: Both parallel methods show decreasing efficiency with higher thread counts, typical of parallel overhead and diminishing returns.
   
   \end{itemize}
+
+\subsection {Serial, MPI Processing}
+
+The MPI implementation of the Laplace code demonstrates a different approach to parallelization compared to OpenMP. The key observations from the MPI results are as follows:
+\begin{table}[H]
+\centering
+\caption{MPI vs Serial Process Performance Comparison}
+\label{tab:mpi_performance}
+\begin{tabular}{lccccc}
+\hline
+\textbf{Test Type} & \textbf{Processes} & \textbf{Time (s)} & \textbf{Speedup} & \textbf{Efficiency (\%)} & \textbf{Status} \\
+\hline
+\multirow{2}{*}{\shortstack{Serial Process\\Test}} 
+& 1  & 46.711 & 1.00$\times$ & 100.0 & \textcolor{green}{Success} \\
+& 4  & 21.878 & 2.14$\times$ & 53.5  & \textcolor{orange}{Partial}$^*$ \\
+\hline
+\multirow{2}{*}{\shortstack{MPI\\Test}} 
+& 1  & -- & -- & -- & \textcolor{red}{Failed}$^{**}$ \\
+& 4  & 6.397  & 7.30$\times$ & 182.6 & \textcolor{green}{Success} \\
+\hline
+\end{tabular}
+\end{table}
+\begin{footnotesize}
+\footnotesize{
+$^*$ 3 out of 4 processes terminated immediately (0 iterations) \\
+$^{**}$ Error: "This code must be run with 4 PEs"
 }
+\end{footnotesize}
+\\The MPI implementation of the Laplace code provides a unique perspective on parallel processing, particularly in how it handles process management and performance scaling. The key findings from the MPI results are:
+\begin{itemize}
+  \item \textbf{MPI achieves 7.30$\times$ speedup} with 4 processes, demonstrating excellent parallel scaling
+  \item \textbf{Super-linear efficiency} The super-linear efficiency of 182.6\% suggests measurement inconsistencies between MPI and serial baselines, likely due to different optimization levels in the implementations rather than true performance gains.
+  \item \textbf{Serial 4-process anomaly}: When serial code runs with 4 processes, 3 terminate immediately while 1 completes the work
+\end{itemize}
 
+\vspace{1em}
 
-\item{
-
+\begin{table}[H]
+\centering
+\caption{MPI Implementation Analysis}
+\label{tab:mpi_analysis}
+\begin{tabular}{lcc}
+\hline
+\textbf{Metric} & \textbf{Value} & \textbf{Interpretation} \\
+\hline
+Baseline Performance (1P) & 46.711 s & Significantly slower than OpenMP baseline \\
+MPI Performance (4P) & 6.397 s & Strong parallel scaling \\
+Speedup (1P → 4P) & 7.30$\times$ & Excellent parallelization \\
+Parallel Efficiency & 182.6\% & Super-linear efficiency$^{\dagger}$ \\
+\hline
+\textbf{Key Ratios} & & \\
+Serial 4P vs Serial 1P & 2.14$\times$ faster & Unexpected improvement \\
+MPI 4P vs Serial 4P & 3.42$\times$ faster & True MPI benefit \\
+\hline
+\end{tabular}
+\end{table}
+\vspace{0.5em}
+\begin{footnotesize}
+\footnotesize{
+$^{\dagger}$ Super-linear efficiency suggests different baseline implementation
 }
+\end{footnotesize}
 
-\end{enumerate}
+The MPI implementation demonstrates strong parallel scaling with a 7.30× speedup using 4 processes, but reveals several critical implementation characteristics. The MPI version is hard-coded to require exactly 4 processes and fails completely with any other configuration. Most notably, the MPI serial baseline (46.7s) is significantly slower than comparable OpenMP implementations, suggesting different algorithmic implementations or optimization levels. When the serial code is forced to run with 4 processes, 3 processes terminate immediately while only 1 completes the work in 21.9s, indicating the serial version lacks proper MPI coordination. The true MPI parallelization benefit is 3.42× over the functioning 4-process baseline, which represents more realistic performance gains. While MPI achieves good parallel efficiency (85.5\% based on realistic baseline), it remains less flexible than OpenMP due to its fixed process requirement and shows inferior absolute performance compared to OpenMP's 8-thread implementation (6.4s vs 4.2s).
 %\include{appendicitis}
 
-\newpage{}
-%\pagebreak{}
+\section*{Conclusion}
 
+This performance analysis reveals distinct characteristics across three computational paradigms for iterative numerical methods. \textbf{Serial execution} provides simplicity and deterministic behavior but is fundamentally limited by single-core performance (22.0-46.7s baseline). \textbf{OpenMP shared-memory parallelization} demonstrates excellent scalability with 10.91× speedup using 32 threads, offering the best balance of performance (1.992s), programming simplicity, and flexibility, though efficiency degrades from 65.1\% (8 threads) to 34.1\% (32 threads) due to memory bandwidth limitations and synchronization overhead. \textbf{MPI distributed-memory parallelization} achieves strong parallel scaling (7.30× speedup with 4 processes) and enables cluster computing, but suffers from implementation rigidity (hard-coded to exactly 4 processes), communication overhead, and reduced absolute performance (6.397s) compared to OpenMP.
+
+The \textbf{Enhanced Red/Black checkerboard algorithm} proves that algorithmic optimization can be more impactful than parallelization paradigm choice alone. This approach delivers 25-41\% performance improvements across all configurations, reducing single-thread baseline from 21.7s to 12.7s and achieving superior 32-thread performance (1.490s vs 1.992s). The Red/Black method eliminates data dependencies through spatial decomposition, accelerates convergence (2.8\% fewer iterations), and enables better cache utilization. Combined with OpenMP's 32-thread parallelization, it achieves the optimal performance of 1.490s with 14.80× speedup, demonstrating that \textbf{hybrid approaches combining algorithmic innovation with appropriate parallelization strategies yield the most significant performance gains} for computationally intensive iterative methods.
+
+For practical applications, \textbf{OpenMP with 8-16 threads provides the optimal efficiency balance (45-65\%)}, while the Red/Black algorithm should be adopted universally for its consistent performance benefits. Future development should pursue \textbf{hybrid MPI+OpenMP implementations with Red/Black optimization} to combine distributed scalability with optimal single-node performance, leveraging the strengths of each paradigm while mitigating their individual limitations.
+
+
+%\newpage{}
+%\pagebreak{}
 
 \bibliographystyle{plain}
 
@@ -350,7 +469,7 @@ will be made clear in our following modules.
 
 \newpage
 
-\section{Appendix}
+\section{Appendix.code}
 
 Here's some of our code (Note the use of VerbatimInput from package \texttt{fancyvrb}):
 
@@ -362,7 +481,7 @@ Here's some of our code (Note the use of VerbatimInput from package \texttt{fanc
 %\end{footnotesize}
 
 \begin{footnotesize}
-\lstinputlisting[style=dm4ds_lstCustom_01]{laplace_serial.c}
+\lstinputlisting[style=dm4ds_lstCustom_01]{ex2/laplace_serial.c}
 \end{footnotesize}
 
 
@@ -375,7 +494,7 @@ Here's some of our code (Note the use of VerbatimInput from package \texttt{fanc
 %\end{footnotesize}
 
 \begin{footnotesize}
-\lstinputlisting[style=dm4ds_lstCustom_01]{laplace_omp.c}
+\lstinputlisting[style=dm4ds_lstCustom_01]{ex1/laplace_omp.c}
 \end{footnotesize}
 
 
@@ -388,27 +507,33 @@ Here's some of our code (Note the use of VerbatimInput from package \texttt{fanc
 %\end{footnotesize}
 
 \begin{footnotesize}
-\lstinputlisting[style=dm4ds_lstCustom_01]{laplace_omp_parallel.c}
+\lstinputlisting[style=dm4ds_lstCustom_01]{ex1/laplace_omp_parallel.c}
+\end{footnotesize}
+
+
+\subsection{Code D: laplace\_mpi.c}
+
+%\begin{footnotesize}
+%\VerbatimInput{_code_C.R}
+%\end{footnotesize}
+
+\begin{footnotesize}
+\lstinputlisting[style=dm4ds_lstCustom_01]{ex2/laplace_mpi.c}
 \end{footnotesize}
 
 
 
-\section{results}
+\section{Appendix.results}
 
 \subsection{ex1\_result.txt}
 \begin{footnotesize}
- \lstinputlisting[style=dm4ds_lstCustom_01]{ex1_result.txt}
+ \lstinputlisting[style=dm4ds_lstCustom_01]{./ex1_result.txt}
 \end{footnotesize}
 
 \subsection{ex2\_result.txt}
 \begin{footnotesize}
- \lstinputlisting[style=dm4ds_lstCustom_01]{ex2_result.txt}
+ \lstinputlisting[style=dm4ds_lstCustom_01]{ex2/ex2_result.txt}
 \end{footnotesize}
 
 
 \end{document}
-
-
-
-
-
