@@ -129,3 +129,28 @@ done
 echo "Parallel Process (fixed race:method-3): Testing complete. Results saved in ${output_file}"
 # end of the parallel process test (fixed race-2)
 
+
+
+echo "!!!!STARTING PARALLEL PROCESS TEST (fixed race:method-4)!!!!" >> ${output_file}
+# Second run tests for Parallel process (fixed race-2)
+for threads in "${thread_counts[@]}"
+do
+    echo "Running with ${threads} threads..."
+    echo "=== Test with ${threads} threads ===" >> ${output_file}
+    echo "Start time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
+    
+    # Set thread count and run program
+    export OMP_NUM_THREADS=${threads}
+    TIMEFORMAT='%3R'
+    runtime=$( { time ./prime_p_n_4.o >> ${output_file}; } 2>&1 )
+    
+    echo "End time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
+    echo "Total wall clock time: ${runtime} seconds" >> ${output_file}
+    echo "----------------------------------------" >> ${output_file}
+    echo "" >> ${output_file}
+    
+    # Add a small delay between runs
+    sleep 1
+done
+echo "Parallel Process (fixed race:method-4): Testing complete. Results saved in ${output_file}"
+# end of the parallel process test (fixed race-4)

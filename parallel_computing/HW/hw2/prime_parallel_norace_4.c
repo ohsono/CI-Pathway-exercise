@@ -1,13 +1,14 @@
 # include <stdlib.h>
 # include <stdio.h>
-#include <omp.h>
+# include <omp.h>
+# include <math.h>
 
 #define MAX_THREADS 32
 
 /*
-  parallelism: private variable with auto reduction
+  parallelism: private variable with reduction + algorithm optimization
   compiler: private(i,j) reduction(+:not_primes)
-  Speed: fast O(n^2)
+  Speed: fastest O(nlogn)
 */
 
 int main ( int argc, char *argv[] ){
@@ -26,7 +27,11 @@ int main ( int argc, char *argv[] ){
 
   #pragma omp parallel for private(i,j) reduction(+:not_primes)
   for ( i = 2; i <= n; i++ ){
-    for ( j = 2; j < i; j++ ){
+    if (i == 2) continue;
+    if (i % 2 == 0) { not_primes++; continue; }
+
+    int sqrt_i = (int)sqrt(i);
+    for (j = 3; j <= sqrt_i; j += 2) {
       if ( i % j == 0 ){
         not_primes++;
         break;
