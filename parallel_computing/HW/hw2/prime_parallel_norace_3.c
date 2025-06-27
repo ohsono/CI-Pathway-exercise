@@ -5,8 +5,8 @@
 #define MAX_THREADS 32
 
 /*
-  parallelism: private variable
-  compiler: private(i,j,not_primes)
+  parallelism: private variable with reduction
+  compiler: private(i,j) reduction(+:not_primes)
   Speed: fast
 */
 
@@ -24,7 +24,7 @@ int main ( int argc, char *argv[] ){
   omp_set_num_threads(num_threads);
   printf("Running with %d OpenMP threads\n", num_threads);
 
-  #pragma omp for private(i,j,not_primes)
+  #pragma omp for private(i,j) reduction(+:not_primes)
   for ( i = 2; i <= n; i++ ){
     for ( j = 2; j < i; j++ ){
       if ( i % j == 0 ){
@@ -35,4 +35,3 @@ int main ( int argc, char *argv[] ){
   }
   printf("Primes: %d\n", n - not_primes);
 }
-

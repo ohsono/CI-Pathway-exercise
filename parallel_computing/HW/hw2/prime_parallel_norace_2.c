@@ -23,10 +23,10 @@ int main ( int argc, char *argv[] ){
   }
   omp_set_num_threads(num_threads);
   printf("Running with %d OpenMP threads\n", num_threads);
-
+  int local_not_primes;
   #pragma omp parallel private(i,j,local_not_primes)
   {
-    int local_not_primes = 0;
+    local_not_primes = 0;
 
     #pragma omp for schedule(static)
     for ( i = 2; i <= n; i++ ){

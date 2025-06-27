@@ -54,7 +54,7 @@ done
 echo "Serial Process: Testing complete. Results saved in ${output_file}"
 # end of the serial process test
 
-echo "!!!!STARTING PARALLEL PROCESS TEST!!!!" >> ${output_file}
+echo "!!!!STARTING PARALLEL PROCESS TEST (fixed race:method-1)!!!!" >> ${output_file}
 # Second run tests for Parallel process
 for threads in "${thread_counts[@]}"
 do
@@ -75,12 +75,12 @@ do
     # Add a small delay between runs
     sleep 1
 done
-echo "Parallel Process: Testing complete. Results saved in ${output_file}"
+echo "Parallel Process(method-1): Testing complete. Results saved in ${output_file}"
 # end of the parallel process test
 
 
 
-echo "!!!!STARTING PARALLEL PROCESS TEST (fixed race)!!!!" >> ${output_file}
+echo "!!!!STARTING PARALLEL PROCESS TEST (fixed race:method-2)!!!!" >> ${output_file}
 # Second run tests for Parallel process (fixed race)
 for threads in "${thread_counts[@]}"
 do
@@ -101,11 +101,11 @@ do
     # Add a small delay between runs
     sleep 1
 done
-echo "Parallel Process (fixed race): Testing complete. Results saved in ${output_file}"
+echo "Parallel Process (fixed race:method-2): Testing complete. Results saved in ${output_file}"
 # end of the parallel process test (fixed race)
 
 
-echo "!!!!STARTING PARALLEL PROCESS TEST (fixed race-serial)!!!!" >> ${output_file}
+echo "!!!!STARTING PARALLEL PROCESS TEST (fixed race:method-3)!!!!" >> ${output_file}
 # Second run tests for Parallel process (fixed race-2)
 for threads in "${thread_counts[@]}"
 do
@@ -126,6 +126,6 @@ do
     # Add a small delay between runs
     sleep 1
 done
-echo "Parallel Process (fixed race-schedule): Testing complete. Results saved in ${output_file}"
+echo "Parallel Process (fixed race:method-3): Testing complete. Results saved in ${output_file}"
 # end of the parallel process test (fixed race-2)
 
