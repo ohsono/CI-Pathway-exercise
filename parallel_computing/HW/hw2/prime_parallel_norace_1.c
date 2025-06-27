@@ -4,6 +4,12 @@
 
 #define MAX_THREADS 32
 
+/*
+  parallelism: using atomic operation
+  compiler: private and reduction -> atomic
+  Speed: slow
+*/
+
 int main ( int argc, char *argv[] ){
 
   int n = 500000;
@@ -18,11 +24,12 @@ int main ( int argc, char *argv[] ){
   omp_set_num_threads(num_threads);
   printf("Running with %d OpenMP threads\n", num_threads);
 
-  // parallel running
-  #pragma omp parallel for private(i,j) 
+  // parallel running reduction with serial atomic counts
+  #pragma omp parallel for private(i,j) reduction(+:not_primes)
   for ( i = 2; i <= n; i++ ){
     for ( j = 2; j < i; j++ ){
       if ( i % j == 0 ){
+        #pragma omp atomic
         not_primes++;
         break;
       }

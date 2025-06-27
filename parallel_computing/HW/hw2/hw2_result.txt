@@ -1,0 +1,164 @@
+=== Basic System Info ===
+Date: Fri Jun 27 00:54:31 CDT 2025
+System: Linux cn063.delta.ncsa.illinois.edu 4.18.0-477.95.1.el8_8.x86_64 #1 SMP Fri Apr 11 09:50:48 EDT 2025 x86_64 x86_64 x86_64 GNU/Linux
+CPU Info: AMD EPYC 7763 64-Core Processor
+=========================
+!!!!STARTING SERIAL PROCESS TEST!!!!
+=== Test with 1 threads ===
+Start time: 2025-06-27 00:54:31.386561239
+Primes: 41539
+End time: 2025-06-27 00:54:50.649946254
+Total wall clock time: 19.260 seconds
+----------------------------------------
+
+=== Test with 4 threads ===
+Start time: 2025-06-27 00:54:51.658435277
+Primes: 41539
+End time: 2025-06-27 00:55:10.994784360
+Total wall clock time: 19.328 seconds
+----------------------------------------
+
+=== Test with 8 threads ===
+Start time: 2025-06-27 00:55:12.002860986
+Primes: 41539
+End time: 2025-06-27 00:55:31.208626516
+Total wall clock time: 19.201 seconds
+----------------------------------------
+
+=== Test with 16 threads ===
+Start time: 2025-06-27 00:55:32.216966448
+Primes: 41539
+End time: 2025-06-27 00:55:51.298787660
+Total wall clock time: 19.078 seconds
+----------------------------------------
+
+=== Test with 32 threads ===
+Start time: 2025-06-27 00:55:52.306815244
+Primes: 41539
+End time: 2025-06-27 00:56:11.464220586
+Total wall clock time: 19.150 seconds
+----------------------------------------
+
+!!!!STARTING PARALLEL PROCESS TEST(fixed race: method-1)!!!!
+=== Test with 1 threads ===
+Start time: 2025-06-27 00:56:12.474536508
+Running with 1 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:56:32.440013562
+Total wall clock time: 19.960 seconds
+----------------------------------------
+
+=== Test with 4 threads ===
+Start time: 2025-06-27 00:56:33.448788232
+Running with 4 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:56:42.823642466
+Total wall clock time: 9.371 seconds
+----------------------------------------
+
+=== Test with 8 threads ===
+Start time: 2025-06-27 00:56:43.832272775
+Running with 8 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:56:49.365219686
+Total wall clock time: 5.529 seconds
+----------------------------------------
+
+=== Test with 16 threads ===
+Start time: 2025-06-27 00:56:50.374730943
+Running with 16 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:56:53.419691032
+Total wall clock time: 3.042 seconds
+----------------------------------------
+
+=== Test with 32 threads ===
+Start time: 2025-06-27 00:56:54.428051012
+Running with 32 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:56:56.494406498
+Total wall clock time: 2.063 seconds
+----------------------------------------
+
+!!!!STARTING PARALLEL PROCESS TEST (fixed race: method-2)!!!!
+=== Test with 1 threads ===
+Start time: 2025-06-27 00:56:57.504494681
+Running with 1 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:57:22.505103107
+Total wall clock time: 24.993 seconds
+----------------------------------------
+
+=== Test with 4 threads ===
+Start time: 2025-06-27 00:57:23.514342514
+Running with 4 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:57:34.925296079
+Total wall clock time: 11.406 seconds
+----------------------------------------
+
+=== Test with 8 threads ===
+Start time: 2025-06-27 00:57:35.934256241
+Running with 8 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:57:41.950712487
+Total wall clock time: 6.012 seconds
+----------------------------------------
+
+=== Test with 16 threads ===
+Start time: 2025-06-27 00:57:42.960066140
+Running with 16 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:57:46.263641791
+Total wall clock time: 3.300 seconds
+----------------------------------------
+
+=== Test with 32 threads ===
+Start time: 2025-06-27 00:57:47.272829030
+Running with 32 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:57:49.382742940
+Total wall clock time: 2.106 seconds
+----------------------------------------
+
+!!!!STARTING PARALLEL PROCESS TEST (fixed race: method-3)!!!!
+=== Test with 1 threads ===
+Start time: 2025-06-27 00:57:50.392717682
+Running with 1 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:58:15.624198297
+Total wall clock time: 25.227 seconds
+----------------------------------------
+
+=== Test with 4 threads ===
+Start time: 2025-06-27 00:58:16.633137680
+Running with 4 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:58:41.948953614
+Total wall clock time: 25.307 seconds
+----------------------------------------
+
+=== Test with 8 threads ===
+Start time: 2025-06-27 00:58:42.957431077
+Running with 8 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:59:08.473662750
+Total wall clock time: 25.513 seconds
+----------------------------------------
+
+=== Test with 16 threads ===
+Start time: 2025-06-27 00:59:09.483185140
+Running with 16 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 00:59:35.178515584
+Total wall clock time: 25.691 seconds
+----------------------------------------
+
+=== Test with 32 threads ===
+Start time: 2025-06-27 00:59:36.188010563
+Running with 32 OpenMP threads
+Primes: 41539
+End time: 2025-06-27 01:00:01.255235618
+Total wall clock time: 25.056 seconds
+----------------------------------------
+

@@ -12,10 +12,13 @@
 # Email: ohsono@gmail.com or hochanson@g.ucla.edu
 ################################################
 # Output file
-output_file="result.txt"
+output_file="hw2_result.txt"
 
 # Clear previous results
 > ${output_file}
+
+# srun --account=becs-delta-cpu --partition=cpu-interactive \
+#  --nodes=1 --cpus-per-task=32 --pty bash
 
 # Add header with system information
 echo "=== Basic System Info ===" > ${output_file}
@@ -38,7 +41,7 @@ do
     # Set thread count and run program
     export OMP_NUM_THREADS=${threads}
     TIMEFORMAT='%3R'
-    runtime=$( { time ./prime_serial.out >> ${output_file}; } 2>&1 )
+    runtime=$( { time ./prime_s.o >> ${output_file}; } 2>&1 )
     
     echo "End time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
     echo "Total wall clock time: ${runtime} seconds" >> ${output_file}
@@ -62,7 +65,7 @@ do
     # Set thread count and run program
     export OMP_NUM_THREADS=${threads}
     TIMEFORMAT='%3R'
-    runtime=$( { time ./prime_parallel.out >> ${output_file}; } 2>&1 )
+    runtime=$( { time ./prime_p_n_1.o >> ${output_file}; } 2>&1 )
     
     echo "End time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
     echo "Total wall clock time: ${runtime} seconds" >> ${output_file}
@@ -74,3 +77,55 @@ do
 done
 echo "Parallel Process: Testing complete. Results saved in ${output_file}"
 # end of the parallel process test
+
+
+
+echo "!!!!STARTING PARALLEL PROCESS TEST (fixed race)!!!!" >> ${output_file}
+# Second run tests for Parallel process (fixed race)
+for threads in "${thread_counts[@]}"
+do
+    echo "Running with ${threads} threads..."
+    echo "=== Test with ${threads} threads ===" >> ${output_file}
+    echo "Start time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
+    
+    # Set thread count and run program
+    export OMP_NUM_THREADS=${threads}
+    TIMEFORMAT='%3R'
+    runtime=$( { time ./prime_p_n_2.o >> ${output_file}; } 2>&1 )
+    
+    echo "End time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
+    echo "Total wall clock time: ${runtime} seconds" >> ${output_file}
+    echo "----------------------------------------" >> ${output_file}
+    echo "" >> ${output_file}
+    
+    # Add a small delay between runs
+    sleep 1
+done
+echo "Parallel Process (fixed race): Testing complete. Results saved in ${output_file}"
+# end of the parallel process test (fixed race)
+
+
+echo "!!!!STARTING PARALLEL PROCESS TEST (fixed race-serial)!!!!" >> ${output_file}
+# Second run tests for Parallel process (fixed race-2)
+for threads in "${thread_counts[@]}"
+do
+    echo "Running with ${threads} threads..."
+    echo "=== Test with ${threads} threads ===" >> ${output_file}
+    echo "Start time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
+    
+    # Set thread count and run program
+    export OMP_NUM_THREADS=${threads}
+    TIMEFORMAT='%3R'
+    runtime=$( { time ./prime_p_n_3.o >> ${output_file}; } 2>&1 )
+    
+    echo "End time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
+    echo "Total wall clock time: ${runtime} seconds" >> ${output_file}
+    echo "----------------------------------------" >> ${output_file}
+    echo "" >> ${output_file}
+    
+    # Add a small delay between runs
+    sleep 1
+done
+echo "Parallel Process (fixed race-schedule): Testing complete. Results saved in ${output_file}"
+# end of the parallel process test (fixed race-2)
+
