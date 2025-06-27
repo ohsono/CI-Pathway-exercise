@@ -24,7 +24,7 @@ int main ( int argc, char *argv[] ){
   omp_set_num_threads(num_threads);
   printf("Running with %d OpenMP threads\n", num_threads);
 
-  #pragma omp parallel private(i,j)
+  #pragma omp parallel private(i,j,local_not_primes)
   {
     int local_not_primes = 0;
 

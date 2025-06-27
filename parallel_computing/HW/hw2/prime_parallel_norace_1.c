@@ -6,7 +6,7 @@
 
 /*
   parallelism: using atomic operation
-  compiler: private and reduction -> atomic
+  compiler: private(i,j) -> atomic operation
   Speed: slow
 */
 
@@ -25,7 +25,7 @@ int main ( int argc, char *argv[] ){
   printf("Running with %d OpenMP threads\n", num_threads);
 
   // parallel running reduction with serial atomic counts
-  #pragma omp parallel for private(i,j) reduction(+:not_primes)
+  #pragma omp parallel for private(i,j)
   for ( i = 2; i <= n; i++ ){
     for ( j = 2; j < i; j++ ){
       if ( i % j == 0 ){
