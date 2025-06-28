@@ -1,6 +1,6 @@
 # include <stdlib.h>
 # include <stdio.h>
-#include <omp.h>
+# include <omp.h>
 
 #define MAX_THREADS 32
 

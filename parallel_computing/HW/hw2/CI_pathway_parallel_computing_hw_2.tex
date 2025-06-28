@@ -140,7 +140,7 @@
 \begin{center}
 {\huge
 \textbf{CI Pathway: Parallel Computing} \\[0.4cm]
-Assignment - 2
+Assignment: Shared Memory Parallelism with OpenMP
 } \\[0.4cm]
 \end{center}
 \end{myQuote}
@@ -193,7 +193,24 @@ UCLA, Statistics\\Hochan Son\\Summer 2025\\
 
 
 \section{Introduction}
-This analysis evaluates parallel computing performance exerise for prime number . The study compares four implementation approaches across varying thread/process counts to assess scalability and efficiency characteristics.
+This study examines the performance characteristics and optimization strategies of OpenMP-based
+parallel programming for computational prime number generation. Through systematic analysis of
+four distinct implementation approaches, we investigate how different parallelization strategies and
+algorithmic optimizations impact computational efficiency and scalability.
+
+The primary learning objectives of this OpenMP exercise include:
+\begin{enumerate}
+  \item{Understanding race condition avoidance in shared-memory parallel programming}
+  \item{Comparing different OpenMP synchronization mechanisms (atomic operations, critical sections, and reductions)}
+  \item{Analyzing the relationship between algorithmic complexity and parallelization benefits}
+  \item{Evaluating parallel efficiency and scalability across varying thread counts}
+  \item{Demonstrating the fundamental principle that algorithmic optimization often provides greater 
+  performance gains than parallelization alone}
+\end{enumerate}
+
+The exercise employs a computationally intensive prime number generation task to stress-test
+different OpenMP implementations and reveal their relative strengths and limitations under high-
+performance computing conditions.
 
 \section{Hardware Environment}
 
@@ -209,7 +226,7 @@ The experiments were conducted on the NCSA Delta HPC cluster, which is a high-pe
 \hline
 Compute Platform & NCSA Delta HPC Cluster \\
 Login Node & dt-login04.delta.ncsa.illinois.edu \\
-Compute Node & cn094.delta.ncsa.illinois.edu \\
+Compute Node & cn096.delta.ncsa.illinois.edu \\
 Operating System & Linux 4.18.0-477.95.1.el8\_8.x86\_64 \\
 Distribution & Red Hat Enterprise Linux 8 \\
 Architecture & x86\_64 \\
@@ -237,13 +254,15 @@ Base Clock & 2.45 GHz \\
 Boost Clock & Up to 3.5 GHz \\
 Manufacturing Process & 7nm TSMC \\
 Socket Type & SP3 \\
+L3 Cache & 256 MB \\
+Memory Support & DDR4-3200 \\
 \hline
 \end{tabular}
 \end{table}
 
 
 
-\section{Exercises For This Module.}
+\section{Exercises Methodology}
 
 %\newgeometry{top=1cm, left=1cm, right=1cm}
 %\begin{figure}[htbp]
@@ -255,17 +274,17 @@ Socket Type & SP3 \\
 %\end{figure}
 %\restoregeometry
 
-
 \subsection{OpenMP Exercise}
 
 \begin{enumerate}
   \item{You will find this code in \texttt{\/projects\/becs\/urbanic} as either \texttt{prime\_serial.c or prime\_serial.f}.
-  \\
-  \\Your job is to accelerate this code using OpenMP. You should see a dramatic speedup if you use our OpenMP directives effectively.
-  \\
-  \\If you are not careful, you could introduce a race condition and have inconsistent results. If you use the same caution we used in the examples above, you will avoid this.
-  \\
-  \\To reiterate what you did in the previous module.
+  
+  Your job is to accelerate this code using OpenMP. You should see a dramatic speedup if you use our OpenMP directives effectively.
+  
+  If you are not careful, you could introduce a race condition and have inconsistent results. If you use the same caution we used in the examples above, you will avoid this.
+  
+  To reiterate what you did in the previous module.
+  }
   \begin{enumerate}
     \item {Compile with something like
     \begin{verbatim}
@@ -288,79 +307,221 @@ Socket Type & SP3 \\
     Submit your code and your timings for at least 1, 4, 8, 16 and 32 threads.
   \end{enumerate}
 
-\section{Solution:}
+\end{enumerate}
 
-% \begin{enumerate}
-%   \item{Exercise 1: Compile, run, and time the Laplace code using the two programming models in this Pathway: OpenMP and MPI.}
-%     Vary the number of cores up to 32 by changing the \texttt{OMP\_NUM\_THREADS} environment variable to see what speedup you experience. Record these times.
+\section{Solution to OpenMP Exercise}
+
+\subsection{Method 0: Serial Code}
+
+The serial code for prime number generation is a straightforward implementation that checks each number for primality by testing divisibility against all smaller numbers. This method is inherently sequential and does not leverage parallel processing capabilities.
+
+\begin{verbatim}
+for (i = 2; i <= n; i++) {
+  for (j = 2; j < i; j++) {
+    if (i % j == 0) {
+      #pragma omp atomic
+      not_primes++;
+      break;
+    }
+  }
+}
+\end{verbatim}
+
+\subsection{Method 1: Atomic Operations}
+
+Using atomic operations for thread-safe updates to shared variables is a common approach in OpenMP. This method ensures that only one thread can update the shared variable at a time
+
+\begin{verbatim}
+#pragma omp parallel for private(i,j)
+for (i = 2; i <= n; i++) {
+  for (j = 2; j < i; j++) {
+    if (i % j == 0) {
+      #pragma omp atomic
+      not_primes++;
+      break;
+    }
+  }
+}
+\end{verbatim}
 
 
-%   \item{Exercise 2: Execute a single timing run, using 4 processes, and record the time obtained.}
+\subsection{Method 2: Manual Reduction with Critical Sections}
 
-% \end{enumerate}
+This method uses a critical section to ensure that only one thread can update the shared variable at a time. While this approach is safe, it can lead to performance bottlenecks due to contention among threads.
+
+\begin{verbatim}
+#pragma omp parallel private(i,j,local_not_primes)
+{
+  local_not_primes = 0;
+
+  #pragma omp for schedule(static)
+  for (i = 2; i <= n; i++) {
+    // computation...
+    local_not_primes++;
+  }
+  #pragma omp critical
+  {
+    not_primes += local_not_primes;
+  }
+}
+
+\end{verbatim}
 
 
+\subsection{Method 3: OpenMP Reduction}
 
-% \section {Solutions: OpenMP and MPI Performance Analysis}
+Leverages OpenMP's built-in reduction clause:
 
-% \subsection {Serial, OpenMP, and Enhanced Parallel Processing}
-%   The purpose of this exerise to measure the differeneces how the parallelism benefits the speed of the execution by distributed computation over multiple cpu cores. I've done few observations.
-%   1. varying threads (1,8, and 32) on \texttt{OMP\_NUM\_THREADS} counts. 
-%   2. varying techniques such as serial, openmp, and red-black (checkerboard algorithm) by complier tuning. 
-%   The performance evaluation reveals significant differences across parallelization approaches, as summarized in the following tables.\\
-%   Each of the process has completed with 1,8, and 32 threads. It has shown that the serial process has no performance improvement across threads counts. The OpenMP has shown good performance. Although Enhanced Parallel test with red-black checker board algorithm has the best outcome at threads=32. 
-%   However, the efficiency on 32 threads has decreasing. As thread count increases, efficiency typically decreases due to parallel overhead, communication costs, and workload imbalances.
+\begin{verbatim}
+#pragma omp parallel for private(i,j) reduction(+:not_primes)
+for (i = 2; i <= n; i++) {
+    for (j = 2; j < i; j++) {
+        if (i % j == 0) {
+            not_primes++;
+            break;
+        }
+    }
+}
+\end{verbatim}
 
-%   \begin{table}[H]
-%   \centering
-%   \caption{Parallel Processing Performance Comparison}
-%   \label{tab:performance_comparison}
-%   \footnotesize
-%   \begin{tabular}{lccccc}
-%   \hline
-%   \textbf{Method} & \textbf{Threads} & \textbf{Time (s)} & \textbf{Speedup} & \textbf{Efficiency (\%)} & \textbf{Iterations} \\
-%   \hline
-%   Serial Process Test & 1  & 22.040 & 1.00$\times$ & 100.0 & 3372 \\
-%   Serial Process Test & 8  & 22.037 & 1.00$\times$ & 12.5  & 3372 \\
-%   Serial Process Test & 32 & 22.065 & 1.00$\times$ & 3.1   & 3372 \\
-%   \hline
-%   OpenMP Process Test & 1  & 21.733 & 1.00$\times$ & 100.0 & 3372 \\
-%   OpenMP Process Test & 8  & 4.175  & 5.21$\times$ & 65.1  & 3372 \\
-%   OpenMP Process Test & 32 & 1.992  & 10.91$\times$ & 34.1 & 3372 \\
-%   \hline
-%   Enhanced (Red/Black) Parallel Test & 1  & 12.738 & 1.00$\times$ & 100.0 & 3279 \\
-%   Enhanced (Red/Black) Parallel Test & 8  & 2.569  & 4.96$\times$ & 62.0  & 3279 \\
-%   Enhanced (Red/Black) Parallel Test & 32 & 1.490  & 8.55$\times$ & 26.7  & 3279 \\
-%   \hline
-%   \end{tabular}
-%   \end{table}
-  
-%   \begin{itemize}
-%     \item \textbf{Serial Test}: Shows no parallelization benefit, confirming serial execution regardless of thread count.
+\subsection{Method 4: Algorithmic Optimization}
+
+Implements optimized trial division with reduced computational complexity, this method significantly reduces the number of iterations required to check for primality, especially for larger numbers. It skips even numbers and only checks divisibility up to the square root of each number.
+
+\begin{verbatim}
+#pragma omp parallel for private(i,j) reduction(+:not_primes)
+for (i = 2; i <= n; i++) {
+    if (i == 2) continue;
+    if (i % 2 == 0) { not_primes++; continue; }
     
-%     \item \textbf{OpenMP Implementation}: 
-%     \\Demonstrates significant speedup with increasing thread count:
-%       \begin{itemize}
-%       \item 8 threads: 5.21$\times$ speedup (65.1\% efficiency)
-%       \item 32 threads: 10.91$\times$ speedup (34.1\% efficiency)
-%       \end{itemize}
+    int sqrt_i = (int)sqrt(i);
+    for (j = 3; j <= sqrt_i; j += 2) {
+        if (i % j == 0) {
+            not_primes++;
+            break;
+        }
+    }
+}
+\end{verbatim}
+
+
+\section{Performance Analysis}
+
+\subsection{Execution Time Results}
+
+The execution times for each method across different thread counts are summarized in Table \ref{tab:execution_times}. The results demonstrate the performance improvements achieved through parallelization and algorithmic optimization.
+\begin{table}[H]
+\centering
+\caption{Execution Time Performance Comparison (seconds)}
+\label{tab:execution_times}
+\footnotesize
+\begin{tabular}{lrrrrr}
+\hline
+\textbf{Method} & \textbf{1 Thread} & \textbf{4 Threads} & \textbf{8 Threads} & \textbf{16 Threads} & \textbf{32 Threads} \\
+\hline
+Serial Baseline & 18.510 & 18.519 & 18.514 & 18.500 & 18.510 \\
+Method 1 (Atomic) & 18.526 & 8.411 & 4.323 & 2.342 & 1.656 \\
+Method 2 (Manual) & 24.462 & 10.384 & 5.555 & 3.008 & 1.878 \\
+Method 3 (Reduction) & 20.161 & 8.147 & 4.701 & 2.510 & 1.523 \\
+Method 4 (Optimized) & 0.035 & 0.019 & 0.015 & 0.021 & 0.037 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Speedup Analysis}
+
+The speedup factor relative to the serial baseline is calculated for each method across different thread counts. The results are presented in Table \ref{tab:speedup}. Method 4 demonstrates a revolutionary performance improvement due to its algorithmic optimization, achieving speedups of up to 1200$\times$ compared to the serial implementation. The result also shows that Methods 1-3 achieve significant speedups through parallelization, with Method 3 (OpenMP reduction) achieving the highest speedup among trial division methods.
+\begin{table}[H]
+\centering
+\caption{Speedup Factor Relative to Serial Baseline}
+\label{tab:speedup}
+\footnotesize
+\begin{tabular}{lrrrrr}
+\hline
+\textbf{Method} & \textbf{1 Thread} & \textbf{4 Threads} & \textbf{8 Threads} & \textbf{16 Threads} & \textbf{32 Threads} \\
+\hline
+Method 1 (Atomic) & 1.00$\times$ & 2.20$\times$ & 4.28$\times$ & 7.91$\times$ & 11.19$\times$ \\
+Method 2 (Manual) & 0.76$\times$ & 1.78$\times$ & 3.33$\times$ & 6.15$\times$ & 9.86$\times$ \\
+Method 3 (Reduction) & 0.92$\times$ & 2.27$\times$ & 3.94$\times$ & 7.38$\times$ & 12.15$\times$ \\
+Method 4 (Optimized) & 528$\times$ & 974$\times$ & 1234$\times$ & 881$\times$ & 500$\times$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Parallel Efficiency}
+
+The parallel efficiency is calculated as the ratio of the speedup factor to the number of threads used. This metric provides insight into how effectively the parallelization scales with increasing thread counts. The results are summarized in Table \ref{tab:efficiency}. Methods 1-3 maintain good efficiency up to 32 threads, while Method 4 shows diminishing returns due to its extremely fast execution time.
+
+\begin{table}[H]
+\centering
+\caption{Parallel Efficiency (\%)}
+\label{tab:efficiency}
+\footnotesize
+\begin{tabular}{lrrrrr}
+\hline
+\textbf{Method} & \textbf{1 Thread} & \textbf{4 Threads} & \textbf{8 Threads} & \textbf{16 Threads} & \textbf{32 Threads} \\
+\hline
+Method 1 (Atomic) & 100.0 & 55.0 & 53.5 & 49.4 & 35.0 \\
+Method 2 (Manual) & 100.0 & 58.6 & 54.9 & 50.6 & 40.6 \\
+Method 3 (Reduction) & 100.0 & 56.8 & 49.3 & 46.1 & 38.0 \\
+Method 4 (Optimized) & 100.0 & 24.4 & 15.4 & 5.5 & 1.6 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Performance Analysis Discussion}
+
+\subsubsection{Trial Division Methods (1-3)}
+
+The three trial division implementations demonstrate excellent parallel scalability:
+
+\begin{itemize}
+    \item \textbf{Method 1 (Atomic Operations)}: This method achieves the best balance of performance and simplicity, with 11.19$\times$ speedup at 32 threads and maintaining good efficiency (35\%).
     
-%     \item \textbf{Enhanced Red/Black (checkerboard algorithm) Method}: Achieves best overall performance:
-%       \begin{itemize}
-%       \item Superior single-thread performance (12.738s vs 21.733s)
-%       \item Best 32-thread performance (1.490s vs 1.992s)
-%       \item 25.2\% faster than OpenMP at 32 threads
-%       \item Slight reduction in required iterations (3279 vs 3372)
-%       \end{itemize}
+    \item \textbf{Method 2 (Manual Reduction)}: The manual reduction method shows higher single-thread overhead due to OpenMP parallel region setup, but achieves comparable scalability with 9.86$\times$ speedup at 32 threads.
     
-%     \item \textbf{Efficiency Analysis}: Both parallel methods show decreasing efficiency with higher thread counts, typical of parallel overhead and diminishing returns.
-  
-%   \end{itemize}
+    \item \textbf{Method 3 (OpenMP Reduction)}: The OpenMP Reduction method demonstrates the highest absolute speedup (12.15$\times$) among trial division methods, validating the efficiency of OpenMP's built-in reduction implementation.
+\end{itemize}
 
-% \subsection {Serial, MPI Processing}
+\subsubsection{Algorithmic Optimization (Method 4)}
 
-\section*{Conclusion}
+Method 4 represents a paradigm shift in performance optimization:
 
+\begin{itemize}
+    \item \textbf{Revolutionary Performance}: Achieves 500-1200$\times$ speedup over trial division methods
+    \item \textbf{Algorithmic Complexity}: Reduces from O(n$^2$) to approximately O(n$\sqrt{n}$) complexity
+    \item \textbf{Limited Parallelization Benefits}: Shows decreasing efficiency with higher thread counts due to extremely fast execution times where overhead dominates
+    \item \textbf{Optimal Thread Count}: Peak performance at 8 threads (0.015s) demonstrates the importance of matching thread count to problem characteristics
+\end{itemize}
+
+\subsubsection{Key Performance Insights}
+
+\begin{enumerate}
+    \item \textbf{Algorithm vs. Parallelization}: The 500-1200$\times$ improvement from algorithmic optimization far exceeds the 10-12$\times$ gains from parallelization, reinforcing the principle that algorithmic efficiency is paramount.
+    
+    \item \textbf{Synchronization Overhead}: All trial division methods show similar scalability patterns, indicating that synchronization strategy has minimal impact compared to computational complexity.
+    
+    \item \textbf{Scalability Limits}: Method 4's efficiency degradation at high thread counts demonstrates that not all algorithms benefit from aggressive parallelization.
+    
+    \item \textbf{Hardware Utilization}: The AMD EPYC 7763's 64-core architecture is well-utilized by Methods 1-3, but Method 4's speed makes thread overhead the limiting factor.
+\end{enumerate}
+
+\section{Conclusions}
+
+This comprehensive analysis of OpenMP parallelization strategies yields several critical insights for high-performance computing. The results demonstrate that while parallelization can yield significant performance improvements, the most substantial gains come from algorithmic optimizations that reduce computational complexity.
+While this exercise parallel programming is very complex in terms of the number of threads, synchronization strategies, and algorithmic optimizations. As such, the parallel debugging is also very complex. The baseline result from serial code was essential to validate the correctness of parallel implementations.
+
+\subsection{Primary Findings}
+
+\begin{enumerate}
+    \item \textbf{Algorithmic Supremacy}: The most significant performance improvement (500-1200$\times$) came from algorithmic optimization rather than parallelization techniques, reinforcing the fundamental principle that efficient algorithms are the foundation of high-performance computing.
+    
+    \item \textbf{OpenMP Strategy Effectiveness}: Among parallelization approaches, OpenMP reduction (Method 3) achieved the highest speedup (12.15$\times$), followed closely by atomic operations (Method 1), demonstrating the efficiency of OpenMP's built-in parallel constructs.
+    
+    \item \textbf{Scalability Characteristics}: Trial division methods (1-3) exhibit excellent linear scaling up to 32 threads with 35-40\% efficiency, while the optimized algorithm shows limited parallelization benefits due to its inherently fast execution.
+    
+    \item \textbf{Race Condition Solutions}: All three synchronization strategies (atomic, critical sections, reduction) successfully eliminated race conditions while maintaining good parallel performance, with reduction showing slight superiority.
+\end{enumerate}
 
 %\newpage{}
 %\pagebreak{}
@@ -379,87 +540,47 @@ Here's some of our code (Note the use of VerbatimInput from package \texttt{fanc
 
 \subsection{Code A: prime\_serial.c}
 
-%\begin{footnotesize}
-%\VerbatimInput{_code_A.R}
-%\end{footnotesize}
-
 \begin{footnotesize}
 \lstinputlisting[style=dm4ds_lstCustom_01]{./prime_serial.c}
 \end{footnotesize}
 
 
+\subsection{Code B: prime\_parallel\_norace\_1.c}
 
-
-\subsection{Code B: prime\_parallel\_race.c}
-
-%\begin{footnotesize}
-%\VerbatimInput{_code_B.R}
-%\end{footnotesize}
 
 \begin{footnotesize}
-\lstinputlisting[style=dm4ds_lstCustom_01]{./prime_parallel_race.c}
+\lstinputlisting[style=dm4ds_lstCustom_01]{./prime_parallel_norace_1.c}
 \end{footnotesize}
-
-
-
-\subsection{Code C: prime\_parallel\_norace\_1.c}
-
-%\begin{footnotesize}
-%\VerbatimInput{_code_B.R}
-%\end{footnotesize}
-
-\begin{footnotesize}
-\lstinputlisting[style=dm4ds_lstCustom_01]{./prime_parallel_race.c}
-\end{footnotesize}
-
 
 
 \subsection{Code C: prime\_parallel\_norace\_2.c}
 
-%\begin{footnotesize}
-%\VerbatimInput{_code_B.R}
-%\end{footnotesize}
 
 \begin{footnotesize}
-\lstinputlisting[style=dm4ds_lstCustom_01]{./prime_parallel_race.c}
+\lstinputlisting[style=dm4ds_lstCustom_01]{./prime_parallel_norace_2.c}
 \end{footnotesize}
 
 
+\subsection{Code D: prime\_parallel\_norace\_3.c}
 
-% \subsection{Code C: laplace\_omp\_parallel.c}
-
-% %\begin{footnotesize}
-% %\VerbatimInput{_code_C.R}
-% %\end{footnotesize}
-
-% \begin{footnotesize}
-% \lstinputlisting[style=dm4ds_lstCustom_01]{ex1/laplace_omp_parallel.c}
-% \end{footnotesize}
+\begin{footnotesize}
+\lstinputlisting[style=dm4ds_lstCustom_01]{./prime_parallel_norace_3.c}
+\end{footnotesize}
 
 
-% \subsection{Code D: laplace\_mpi.c}
+\subsection{Code D: prime\_parallel\_norace\_4.c}
 
-% %\begin{footnotesize}
-% %\VerbatimInput{_code_C.R}
-% %\end{footnotesize}
-
-% \begin{footnotesize}
-% \lstinputlisting[style=dm4ds_lstCustom_01]{ex2/laplace_mpi.c}
-% \end{footnotesize}
-
+\begin{footnotesize}
+\lstinputlisting[style=dm4ds_lstCustom_01]{./prime_parallel_norace_4.c}
+\end{footnotesize}
 
 
 \section{Appendix.hw2\_result.txt}
 
 \subsection{result.txt}
+
 \begin{footnotesize}
  \lstinputlisting[style=dm4ds_lstCustom_01]{./hw2_result.txt}
 \end{footnotesize}
-
-% \subsection{ex2\_result.txt}
-% \begin{footnotesize}
-%  \lstinputlisting[style=dm4ds_lstCustom_01]{ex2/ex2_result.txt}
-% \end{footnotesize}
-
 
 \end{document}
