@@ -193,7 +193,6 @@ UCLA, Statistics\\Hochan Son\\Summer 2025\\
 
 
 \section{Introduction}
-This analysis evaluates parallel computing performance exerise for prime number . The study compares four implementation approaches across varying thread/process counts to assess scalability and efficiency characteristics.
 
 \section{Hardware Environment}
 
@@ -281,76 +280,8 @@ Write a code that runs on 8 PEs and does a "circular shift." This means that eve
   Submit a copy of your code. Any output might be helpful, too.
   }
 
-\section{Solution:}
+\section{Solution Implementation}
 
-% \begin{enumerate}
-%   \item{Exercise 1: Compile, run, and time the Laplace code using the two programming models in this Pathway: OpenMP and MPI.}
-%     Vary the number of cores up to 32 by changing the \texttt{OMP\_NUM\_THREADS} environment variable to see what speedup you experience. Record these times.
-
-
-%   \item{Exercise 2: Execute a single timing run, using 4 processes, and record the time obtained.}
-
-% \end{enumerate}
-
-
-
-% \section {Solutions: OpenMP and MPI Performance Analysis}
-
-% \subsection {Serial, OpenMP, and Enhanced Parallel Processing}
-%   The purpose of this exerise to measure the differeneces how the parallelism benefits the speed of the execution by distributed computation over multiple cpu cores. I've done few observations.
-%   1. varying threads (1,8, and 32) on \texttt{OMP\_NUM\_THREADS} counts. 
-%   2. varying techniques such as serial, openmp, and red-black (checkerboard algorithm) by complier tuning. 
-%   The performance evaluation reveals significant differences across parallelization approaches, as summarized in the following tables.\\
-%   Each of the process has completed with 1,8, and 32 threads. It has shown that the serial process has no performance improvement across threads counts. The OpenMP has shown good performance. Although Enhanced Parallel test with red-black checker board algorithm has the best outcome at threads=32. 
-%   However, the efficiency on 32 threads has decreasing. As thread count increases, efficiency typically decreases due to parallel overhead, communication costs, and workload imbalances.
-
-%   \begin{table}[H]
-%   \centering
-%   \caption{Parallel Processing Performance Comparison}
-%   \label{tab:performance_comparison}
-%   \footnotesize
-%   \begin{tabular}{lccccc}
-%   \hline
-%   \textbf{Method} & \textbf{Threads} & \textbf{Time (s)} & \textbf{Speedup} & \textbf{Efficiency (\%)} & \textbf{Iterations} \\
-%   \hline
-%   Serial Process Test & 1  & 22.040 & 1.00$\times$ & 100.0 & 3372 \\
-%   Serial Process Test & 8  & 22.037 & 1.00$\times$ & 12.5  & 3372 \\
-%   Serial Process Test & 32 & 22.065 & 1.00$\times$ & 3.1   & 3372 \\
-%   \hline
-%   OpenMP Process Test & 1  & 21.733 & 1.00$\times$ & 100.0 & 3372 \\
-%   OpenMP Process Test & 8  & 4.175  & 5.21$\times$ & 65.1  & 3372 \\
-%   OpenMP Process Test & 32 & 1.992  & 10.91$\times$ & 34.1 & 3372 \\
-%   \hline
-%   Enhanced (Red/Black) Parallel Test & 1  & 12.738 & 1.00$\times$ & 100.0 & 3279 \\
-%   Enhanced (Red/Black) Parallel Test & 8  & 2.569  & 4.96$\times$ & 62.0  & 3279 \\
-%   Enhanced (Red/Black) Parallel Test & 32 & 1.490  & 8.55$\times$ & 26.7  & 3279 \\
-%   \hline
-%   \end{tabular}
-%   \end{table}
-  
-%   \begin{itemize}
-%     \item \textbf{Serial Test}: Shows no parallelization benefit, confirming serial execution regardless of thread count.
-    
-%     \item \textbf{OpenMP Implementation}: 
-%     \\Demonstrates significant speedup with increasing thread count:
-%       \begin{itemize}
-%       \item 8 threads: 5.21$\times$ speedup (65.1\% efficiency)
-%       \item 32 threads: 10.91$\times$ speedup (34.1\% efficiency)
-%       \end{itemize}
-    
-%     \item \textbf{Enhanced Red/Black (checkerboard algorithm) Method}: Achieves best overall performance:
-%       \begin{itemize}
-%       \item Superior single-thread performance (12.738s vs 21.733s)
-%       \item Best 32-thread performance (1.490s vs 1.992s)
-%       \item 25.2\% faster than OpenMP at 32 threads
-%       \item Slight reduction in required iterations (3279 vs 3372)
-%       \end{itemize}
-    
-%     \item \textbf{Efficiency Analysis}: Both parallel methods show decreasing efficiency with higher thread counts, typical of parallel overhead and diminishing returns.
-  
-%   \end{itemize}
-
-% \subsection {Serial, MPI Processing}
 
 \section*{Conclusion}
 
