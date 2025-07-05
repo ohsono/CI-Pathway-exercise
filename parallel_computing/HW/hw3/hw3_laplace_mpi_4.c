@@ -40,7 +40,7 @@
 #define MAX_TEMP_ERROR 0.01
 #define verbose 0
 
-void initialze_circular(int ROWS, int npes, int my_PE_num, double (*Temperature_last)[COLUMNS+2]) {
+void initialze_circular(int ROWS, int npes, int my_PE_num, double **Temperature_last) {
     //All: generic boundary 
     for (int i = 0; i <= ROWS + 1; i++) {
         Temperature_last[i][0] = 0.0;           // Left boundary
@@ -61,7 +61,7 @@ void initialze_circular(int ROWS, int npes, int my_PE_num, double (*Temperature_
 }
 
 // only called by last PE
-void track_progress(int iteration, int ROWS, double (*Temperature)[COLUMNS+2]) {
+void track_progress(int iteration, int ROWS, double **Temperature) {
 
     printf("---------- Iteration number: %d ------------\n", iteration);
     // output global coordinates so user doesn't have to understand decomposition
@@ -75,12 +75,11 @@ int main(int argc, char** argv) {
     int my_PE_num;                  // Current PE
     int npes;                       // number of PEs
     int next_PE, prev_PE;
-    double dt_global = 100;
+    double dt, dt_global = 100;
     struct timeval start_time, stop_time, elapsed_time;
     int max_iterations = 4000;
     int iteration = 1;
-    int i, j;
-    //MPI_Status status;              // status returned by MPI calls
+    MPI_Status status;              // status returned by MPI calls
 
     // Initialize MPI
     MPI_Init(&argc, &argv);
@@ -106,42 +105,66 @@ int main(int argc, char** argv) {
     int ghost_rows = ROWS_GLOBAL % npes;
     int ROWS = rows_per_process + (my_PE_num < ghost_rows ? 1 : 0); // for even distribution of the ghost_rows in case the rows are not exactly divisible by process X.
 
-    // Optimized: Single contiguous memory allocation
-    double (*Temperature)[COLUMNS+2] = malloc((ROWS+2) * (COLUMNS+2) * sizeof(*Temperature));
-    double (*Temperature_last)[COLUMNS+2] = malloc((ROWS+2) * (COLUMNS+2) * sizeof(*Temperature_last));
-
+    // Dynamically allocate memory space
+    double **Temperature = (double **)malloc((ROWS + 2) * sizeof(double *));
+    double **Temperature_last = (double **)malloc((ROWS + 2) * sizeof(double *));
+    for (int i = 0; i < ROWS + 2; i++) {
+        Temperature[i] = (double *)malloc((COLUMNS + 2) * sizeof(double));
+        Temperature_last[i] = (double *)malloc((COLUMNS + 2) * sizeof(double));
+    }
     initialze_circular(ROWS, npes, my_PE_num, Temperature_last);
 
     while (dt_global > MAX_TEMP_ERROR && iteration <= max_iterations) {
-
-        // Phase 1: Post all non-blocking operations
-        MPI_Request requests[4];
-        int req_count = 0;
-        MPI_Isend(&Temperature[ROWS][1], COLUMNS, MPI_DOUBLE, next_PE, DOWN, MPI_COMM_WORLD, &requests[req_count++]);
-        MPI_Irecv(&Temperature[0][1], COLUMNS, MPI_DOUBLE, prev_PE, DOWN, MPI_COMM_WORLD, &requests[req_count++]);
-
-        // Phase 2: Calculate interior points (overlap!)
-        for(i = 2; i < ROWS; i++) {
-            for(j = 1; j <= COLUMNS; j++) {
+        // Main calculation: average four neighbors
+        for (int i = 1; i <= ROWS; i++) {
+            for (int j = 1; j <= COLUMNS; j++) {
                 Temperature[i][j] = 0.25 * (Temperature_last[i+1][j] + Temperature_last[i-1][j] +
                                             Temperature_last[i][j+1] + Temperature_last[i][j-1]);
             }
         }
 
-        // Compute local max difference and update Temperature_last
-        //dt = 0.0;
-        for (int i = 1; i <= ROWS; i++) {
-            for (int j = 1; j <= COLUMNS; j++) {            
-                // Optimized: Pointer swapping
-                double (*temp_ptr)[COLUMNS+2] = Temperature_last;
-                Temperature_last = Temperature;
-                Temperature = temp_ptr;            
+        //only send/recv more than 1 processors
+        if (npes > 1) {
+            // COMMUNICATION PHASE: a circular ring communication (avoiding deadlock)
+            // Each PE sends its bottom row to next_PE and receives top ghost row from prev_PE
+            if (my_PE_num % 2 == 0) {
+                if (verbose) printf("PE %d sending bottom row to PE %d\n", my_PE_num, next_PE);
+                MPI_Send(&Temperature[ROWS][1], COLUMNS, MPI_DOUBLE, next_PE, DOWN, MPI_COMM_WORLD);
+                if (verbose) printf("PE %d receiving top ghost row from PE %d\n", my_PE_num, prev_PE);
+                MPI_Recv(&Temperature[0][1], COLUMNS, MPI_DOUBLE, prev_PE, DOWN, MPI_COMM_WORLD, &status);
+            } else {
+                if (verbose) printf("PE %d receiving top ghost row from PE %d\n", my_PE_num, prev_PE);
+                MPI_Recv(&Temperature[0][1], COLUMNS, MPI_DOUBLE, prev_PE, DOWN, MPI_COMM_WORLD, &status);
+                if (verbose) printf("PE %d sending bottom row to PE %d\n", my_PE_num, next_PE);
+                MPI_Send(&Temperature[ROWS][1], COLUMNS, MPI_DOUBLE, next_PE, DOWN, MPI_COMM_WORLD);
+            }
+
+            // Each PE sends its top row to prev_PE and receives bottom ghost row from next_PE
+            if (my_PE_num % 2 == 0) {
+                if (verbose) printf("PE %d sending top row to PE %d\n", my_PE_num, prev_PE);
+                MPI_Send(&Temperature[1][1], COLUMNS, MPI_DOUBLE, prev_PE, UP, MPI_COMM_WORLD);
+                if (verbose) printf("PE %d receiving bottom ghost row from PE %d\n", my_PE_num, next_PE);
+                MPI_Recv(&Temperature[ROWS+1][1], COLUMNS, MPI_DOUBLE, next_PE, UP, MPI_COMM_WORLD, &status);
+            } else {
+                if (verbose) printf("PE %d receiving bottom ghost row from PE %d\n", my_PE_num, next_PE);
+                MPI_Recv(&Temperature[ROWS+1][1], COLUMNS, MPI_DOUBLE, next_PE, UP, MPI_COMM_WORLD, &status);
+                if (verbose) printf("PE %d sending top row to PE %d\n", my_PE_num, prev_PE);
+                MPI_Send(&Temperature[1][1], COLUMNS, MPI_DOUBLE, prev_PE, UP, MPI_COMM_WORLD);
             }
         }
-        MPI_Waitall(req_count, requests, MPI_STATUSES_IGNORE);
+
+        // Compute local max difference and update Temperature_last
+        dt = 0.0;
+        for (int i = 1; i <= ROWS; i++) {
+            for (int j = 1; j <= COLUMNS; j++) {
+                dt = fmax(fabs(Temperature[i][j] - Temperature_last[i][j]), dt);
+                Temperature_last[i][j] = Temperature[i][j];
+            }
+        }
+
         // Find global dt
-        // Optimized: Single operation
-        //MPI_Allreduce(&dt, &dt_global, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Reduce(&dt, &dt_global, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&dt_global, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
         // periodically print test values - only for PE in lower corner
         if((iteration % 100) == 0) {
@@ -163,6 +186,10 @@ int main(int argc, char** argv) {
     }
 
     // Free memory after all of the communication has finished
+    for (int i = 0; i < ROWS + 2; i++) {
+        free(Temperature[i]);
+        free(Temperature_last[i]);
+    }
     free(Temperature);
     free(Temperature_last);
 
