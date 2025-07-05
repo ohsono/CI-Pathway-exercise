@@ -112,59 +112,78 @@ int main(int argc, char** argv) {
         Temperature[i] = (double *)malloc((COLUMNS + 2) * sizeof(double));
         Temperature_last[i] = (double *)malloc((COLUMNS + 2) * sizeof(double));
     }
+    // Optimized: Single contiguous memory allocation
+    double (*Temperature)[COLUMNS+2] = malloc((ROWS+2) * (COLUMNS+2) * sizeof(double));
+
     initialze_circular(ROWS, npes, my_PE_num, Temperature_last);
 
     while (dt_global > MAX_TEMP_ERROR && iteration <= max_iterations) {
-        // Main calculation: average four neighbors
-        for (int i = 1; i <= ROWS; i++) {
-            for (int j = 1; j <= COLUMNS; j++) {
+        // // Main calculation: average four neighbors
+        // for (int i = 1; i <= ROWS; i++) {
+        //     for (int j = 1; j <= COLUMNS; j++) {
+        //         Temperature[i][j] = 0.25 * (Temperature_last[i+1][j] + Temperature_last[i-1][j] +
+        //                                     Temperature_last[i][j+1] + Temperature_last[i][j-1]);
+        //     }
+        // }
+
+        //only send/recv more than 1 processors
+        // if (npes > 1) {
+            // COMMUNICATION PHASE: a circular ring communication (avoiding deadlock)
+            // Each PE sends its bottom row to next_PE and receives top ghost row from prev_PE
+        //     if (my_PE_num % 2 == 0) {
+        //         if (verbose) printf("PE %d sending bottom row to PE %d\n", my_PE_num, next_PE);
+        //         MPI_Send(&Temperature[ROWS][1], COLUMNS, MPI_DOUBLE, next_PE, DOWN, MPI_COMM_WORLD);
+        //         if (verbose) printf("PE %d receiving top ghost row from PE %d\n", my_PE_num, prev_PE);
+        //         MPI_Recv(&Temperature[0][1], COLUMNS, MPI_DOUBLE, prev_PE, DOWN, MPI_COMM_WORLD, &status);
+        //     } else {
+        //         if (verbose) printf("PE %d receiving top ghost row from PE %d\n", my_PE_num, prev_PE);
+        //         MPI_Recv(&Temperature[0][1], COLUMNS, MPI_DOUBLE, prev_PE, DOWN, MPI_COMM_WORLD, &status);
+        //         if (verbose) printf("PE %d sending bottom row to PE %d\n", my_PE_num, next_PE);
+        //         MPI_Send(&Temperature[ROWS][1], COLUMNS, MPI_DOUBLE, next_PE, DOWN, MPI_COMM_WORLD);
+        //     }
+
+        //     // Each PE sends its top row to prev_PE and receives bottom ghost row from next_PE
+        //     if (my_PE_num % 2 == 0) {
+        //         if (verbose) printf("PE %d sending top row to PE %d\n", my_PE_num, prev_PE);
+        //         MPI_Send(&Temperature[1][1], COLUMNS, MPI_DOUBLE, prev_PE, UP, MPI_COMM_WORLD);
+        //         if (verbose) printf("PE %d receiving bottom ghost row from PE %d\n", my_PE_num, next_PE);
+        //         MPI_Recv(&Temperature[ROWS+1][1], COLUMNS, MPI_DOUBLE, next_PE, UP, MPI_COMM_WORLD, &status);
+        //     } else {
+        //         if (verbose) printf("PE %d receiving bottom ghost row from PE %d\n", my_PE_num, next_PE);
+        //         MPI_Recv(&Temperature[ROWS+1][1], COLUMNS, MPI_DOUBLE, next_PE, UP, MPI_COMM_WORLD, &status);
+        //         if (verbose) printf("PE %d sending top row to PE %d\n", my_PE_num, prev_PE);
+        //         MPI_Send(&Temperature[1][1], COLUMNS, MPI_DOUBLE, prev_PE, UP, MPI_COMM_WORLD);
+        //     }
+        // }
+
+        // Phase 1: Post all non-blocking operations
+        MPI_Request requests[4];
+        int req_count = 0;
+        MPI_Isend(&Temperature[ROWS][1], COLUMNS, MPI_DOUBLE, next_PE, DOWN, MPI_COMM_WORLD, &requests[req_count++]);
+        MPI_Irecv(&Temperature[0][1], COLUMNS, MPI_DOUBLE, prev_PE, DOWN, MPI_COMM_WORLD, &requests[req_count++]);
+
+        // Phase 2: Calculate interior points (overlap!)
+        for(i = 2; i < ROWS; i++) {
+            for(j = 1; j <= COLUMNS; j++) {
                 Temperature[i][j] = 0.25 * (Temperature_last[i+1][j] + Temperature_last[i-1][j] +
                                             Temperature_last[i][j+1] + Temperature_last[i][j-1]);
             }
         }
 
-        //only send/recv more than 1 processors
-        if (npes > 1) {
-            // COMMUNICATION PHASE: a circular ring communication (avoiding deadlock)
-            // Each PE sends its bottom row to next_PE and receives top ghost row from prev_PE
-            if (my_PE_num % 2 == 0) {
-                if (verbose) printf("PE %d sending bottom row to PE %d\n", my_PE_num, next_PE);
-                MPI_Send(&Temperature[ROWS][1], COLUMNS, MPI_DOUBLE, next_PE, DOWN, MPI_COMM_WORLD);
-                if (verbose) printf("PE %d receiving top ghost row from PE %d\n", my_PE_num, prev_PE);
-                MPI_Recv(&Temperature[0][1], COLUMNS, MPI_DOUBLE, prev_PE, DOWN, MPI_COMM_WORLD, &status);
-            } else {
-                if (verbose) printf("PE %d receiving top ghost row from PE %d\n", my_PE_num, prev_PE);
-                MPI_Recv(&Temperature[0][1], COLUMNS, MPI_DOUBLE, prev_PE, DOWN, MPI_COMM_WORLD, &status);
-                if (verbose) printf("PE %d sending bottom row to PE %d\n", my_PE_num, next_PE);
-                MPI_Send(&Temperature[ROWS][1], COLUMNS, MPI_DOUBLE, next_PE, DOWN, MPI_COMM_WORLD);
-            }
-
-            // Each PE sends its top row to prev_PE and receives bottom ghost row from next_PE
-            if (my_PE_num % 2 == 0) {
-                if (verbose) printf("PE %d sending top row to PE %d\n", my_PE_num, prev_PE);
-                MPI_Send(&Temperature[1][1], COLUMNS, MPI_DOUBLE, prev_PE, UP, MPI_COMM_WORLD);
-                if (verbose) printf("PE %d receiving bottom ghost row from PE %d\n", my_PE_num, next_PE);
-                MPI_Recv(&Temperature[ROWS+1][1], COLUMNS, MPI_DOUBLE, next_PE, UP, MPI_COMM_WORLD, &status);
-            } else {
-                if (verbose) printf("PE %d receiving bottom ghost row from PE %d\n", my_PE_num, next_PE);
-                MPI_Recv(&Temperature[ROWS+1][1], COLUMNS, MPI_DOUBLE, next_PE, UP, MPI_COMM_WORLD, &status);
-                if (verbose) printf("PE %d sending top row to PE %d\n", my_PE_num, prev_PE);
-                MPI_Send(&Temperature[1][1], COLUMNS, MPI_DOUBLE, prev_PE, UP, MPI_COMM_WORLD);
-            }
-        }
-
         // Compute local max difference and update Temperature_last
-        dt = 0.0;
+        //dt = 0.0;
         for (int i = 1; i <= ROWS; i++) {
-            for (int j = 1; j <= COLUMNS; j++) {
-                dt = fmax(fabs(Temperature[i][j] - Temperature_last[i][j]), dt);
-                Temperature_last[i][j] = Temperature[i][j];
+            for (int j = 1; j <= COLUMNS; j++) {            
+                // Optimized: Pointer swapping
+                double (*temp_ptr)[COLUMNS+2] = Temperature_last;
+                Temperature_last = Temperature;
+                Temperature = temp_ptr;            
             }
         }
-
+        MPI_Waitall(req_count, requests, MPI_STATUSES_IGNORE);
         // Find global dt
-        MPI_Reduce(&dt, &dt_global, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-        MPI_Bcast(&dt_global, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+        // Optimized: Single operation
+        //MPI_Allreduce(&dt, &dt_global, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
         // periodically print test values - only for PE in lower corner
         if((iteration % 100) == 0) {
