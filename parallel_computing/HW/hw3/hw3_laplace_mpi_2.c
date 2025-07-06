@@ -1,26 +1,18 @@
 /****************************************************************
+ * Complete Working 1D Linear Laplace MPI Solver
  * Project: CI Pathway Summer 2025 
- * Course: Parallel Programing 
+ * Course: Parallel Programming 
  * Assignment: Distributed Memory Parallelism                                                                 
  * Original Author: John Urbanic, PSC 2014
- * Author: Hochan Son, UCLA, Statistics
- * Date : 2025-06-30 
- 
- * Note:
-  - Implemented robust circular (ring) communication: Each PE exchanges boundary 
-  rows with its neighbors using a deadlock-free pattern, supporting any number of 
-  processes.
-  - Improved boundary initialization: The initialze_circular function sets left/right 
-  boundaries for all PEs, and top/bottom boundaries for the first/last PE, ensuring 
-  proper boundary conditions.
-  - Added periodic progress reporting: The code prints progress every 100 iterations
-   from the last PE, showing representative grid values.
-  - Added timing and result summary: The code measures and reports total runtime 
-  and final error on PE 0.
-  - Memory management: Dynamic allocation and cleanup of 2D arrays for temperature 
-  grids.
-  - Verbose control: Communication messages are printed only if the verbose flag is 
-  enabled.
+ * Modified by: Hochan Son, UCLA, Statistics
+ * Date: 2025-07-05
+ * 
+ * COMPLETE WORKING VERSION with:
+ * - Correct boundary conditions (matches original exactly)
+ * - Linear topology (no circular communication)
+ * - Dynamic process count support
+ * - Proper convergence checking
+ * - Fixed ghost cell communication
  *******************************************************************/
 
 #include <stdlib.h>
@@ -29,143 +21,233 @@
 #include <sys/time.h>
 #include <mpi.h>
 
-
 #define COLUMNS      1000
-#define ROWS_GLOBAL  1000        // this is a "global" row count
+#define ROWS_GLOBAL  1000
+#define MAX_TEMP_ERROR 0.01
 
-// communication tags
+// Communication tags
 #define DOWN     100
 #define UP       101   
 
-#define MAX_TEMP_ERROR 0.01
-#define verbose 0
+// Global variables for temperature arrays
+double **Temperature;
+double **Temperature_last;
 
-void initialze_circular(int ROWS, int npes, int my_PE_num, double (*Temperature_last)[COLUMNS+2]) {
-    //All: generic boundary 
-    for (int i = 0; i <= ROWS + 1; i++) {
-        Temperature_last[i][0] = 0.0;           // Left boundary
-        Temperature_last[i][COLUMNS+1] = 100.0; // Right boundary  
-    }
+// Function prototypes
+void initialize(int npes, int my_PE_num, int my_rows);
+void track_progress(int iteration, int my_rows, int npes, int my_PE_num);
 
-    //PE_0: set top boundary
-    if (my_PE_num == 0) {
-        for (int j = 0; j <= COLUMNS + 1; j++)
-            Temperature_last[0][j] = 0.0; // Top boundary
-    }
-
-    //PE_7: set bottom boundary
-    if (my_PE_num == npes-1) {
-        for (int j = 0; j <= COLUMNS + 1; j++)
-            Temperature_last[ROWS+1][j] = 100.0; // Bottom boundary
-    }
-}
-
-// only called by last PE
-void track_progress(int iteration, int ROWS, double (*Temperature)[COLUMNS+2]) {
-
-    printf("---------- Iteration number: %d ------------\n", iteration);
-    // output global coordinates so user doesn't have to understand decomposition
-    for(int i = 5; i >= 0; i--) {
-      printf("[%d,%d]: %5.2f  ", ROWS-i, COLUMNS-i, Temperature[ROWS-i][COLUMNS-i]);
-    }
-    printf("\n");
-}
-
-int main(int argc, char** argv) {
-    int my_PE_num;                  // Current PE
-    int npes;                       // number of PEs
-    int next_PE, prev_PE;
-    double dt_global = 100;
-    struct timeval start_time, stop_time, elapsed_time;
-    int max_iterations = 4000;
-    int iteration = 1;
+int main(int argc, char *argv[]) {
     int i, j;
-    //MPI_Status status;              // status returned by MPI calls
+    int max_iterations;
+    int iteration = 1;
+    double dt;
+    struct timeval start_time, stop_time, elapsed_time;
 
-    // Initialize MPI
+    int npes;                // number of PEs
+    int my_PE_num;           // my PE number
+    double dt_global = 100;  // delta t across all PEs
+    MPI_Status status;       // status returned by MPI calls
+
+    // MPI startup routines
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_PE_num);
     MPI_Comm_size(MPI_COMM_WORLD, &npes);
-    
 
-    // Calculate ring neighbors
-    next_PE = (my_PE_num + 1) % npes;
-    prev_PE = (my_PE_num - 1 + npes) % npes;
+    // Calculate dynamic local dimensions
+    int rows_per_process = ROWS_GLOBAL / npes;
+    int extra_rows = ROWS_GLOBAL % npes;
     
-    // PE 0 asks for input, default has been set to 4000
-    // if(my_PE_num == 0) {
-    //     printf("Maximum iterations [100-4000]?\n");
-    //     fflush(stdout); // Not always necessary, but can be helpful
-    //     scanf("%d", &max_iterations);
-    // }
+    // Handle uneven division
+    int my_rows = rows_per_process;
+    if (my_PE_num < extra_rows) {
+        my_rows++;  // First 'extra_rows' processes get one extra row
+    }
+
+    if (my_PE_num == 0) {
+        printf("=== Complete Working 1D Linear Laplace MPI Solver ===\n");
+        printf("Running with %d processes\n", npes);
+        printf("Grid size: %d x %d\n", ROWS_GLOBAL, COLUMNS);
+        printf("Process 0 managing %d rows\n", my_rows);
+    }
+
+    // Dynamic memory allocation for 2D arrays
+    Temperature = malloc((my_rows + 2) * sizeof(double*));
+    Temperature_last = malloc((my_rows + 2) * sizeof(double*));
+    
+    for(i = 0; i < my_rows + 2; i++) {
+        Temperature[i] = malloc((COLUMNS + 2) * sizeof(double));
+        Temperature_last[i] = malloc((COLUMNS + 2) * sizeof(double));
+    }
+
+    // PE 0 asks for input
+    if(my_PE_num == 0) {
+        printf("Maximum iterations [100-4000]?\n");
+        fflush(stdout);
+        scanf("%d", &max_iterations);
+    }
+
+    // Broadcast max iterations to other PEs
     MPI_Bcast(&max_iterations, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    
-    if (my_PE_num==0) gettimeofday(&start_time,NULL);
 
-    int rows_per_process = ROWS_GLOBAL / npes; // Dynamically Calculate local dimensions
-    int ghost_rows = ROWS_GLOBAL % npes;
-    int ROWS = rows_per_process + (my_PE_num < ghost_rows ? 1 : 0); // for even distribution of the ghost_rows in case the rows are not exactly divisible by process X.
+    if (my_PE_num == 0) gettimeofday(&start_time, NULL);
 
-    // Optimized: Single contiguous memory allocation
-    double (*Temperature)[COLUMNS+2] = malloc((ROWS+2) * (COLUMNS+2) * sizeof(*Temperature));
-    double (*Temperature_last)[COLUMNS+2] = malloc((ROWS+2) * (COLUMNS+2) * sizeof(*Temperature_last));
+    // Initialize boundary conditions
+    initialize(npes, my_PE_num, my_rows);
 
-    initialze_circular(ROWS, npes, my_PE_num, Temperature_last);
-
+    // Main iteration loop
     while (dt_global > MAX_TEMP_ERROR && iteration <= max_iterations) {
 
-        // Phase 1: Post all non-blocking operations
-        MPI_Request requests[4];
-        int req_count = 0;
-        MPI_Isend(&Temperature[ROWS][1], COLUMNS, MPI_DOUBLE, next_PE, DOWN, MPI_COMM_WORLD, &requests[req_count++]);
-        MPI_Irecv(&Temperature[0][1], COLUMNS, MPI_DOUBLE, prev_PE, DOWN, MPI_COMM_WORLD, &requests[req_count++]);
-
-        // Phase 2: Calculate interior points (overlap!)
-        for(i = 2; i < ROWS; i++) {
+        // === MAIN CALCULATION: average my four neighbors ===
+        for(i = 1; i <= my_rows; i++) {
             for(j = 1; j <= COLUMNS; j++) {
                 Temperature[i][j] = 0.25 * (Temperature_last[i+1][j] + Temperature_last[i-1][j] +
                                             Temperature_last[i][j+1] + Temperature_last[i][j-1]);
             }
         }
 
-        // Compute local max difference and update Temperature_last
-        //dt = 0.0;
-        for (int i = 1; i <= ROWS; i++) {
-            for (int j = 1; j <= COLUMNS; j++) {            
-                // Optimized: Pointer swapping
-                double (*temp_ptr)[COLUMNS+2] = Temperature_last;
-                Temperature_last = Temperature;
-                Temperature = temp_ptr;            
+        // === COMMUNICATION PHASE: send ghost rows for next iteration ===
+
+        // Send bottom real row down
+        if(my_PE_num != npes-1) {  // unless we are bottom PE
+            MPI_Send(&Temperature[my_rows][1], COLUMNS, MPI_DOUBLE, my_PE_num+1, DOWN, MPI_COMM_WORLD);
+        }
+
+        // Receive the bottom row from above into our top ghost row
+        if(my_PE_num != 0) {  // unless we are top PE
+            MPI_Recv(&Temperature_last[0][1], COLUMNS, MPI_DOUBLE, my_PE_num-1, DOWN, MPI_COMM_WORLD, &status);
+        }
+
+        // Send top real row up
+        if(my_PE_num != 0) {  // unless we are top PE
+            MPI_Send(&Temperature[1][1], COLUMNS, MPI_DOUBLE, my_PE_num-1, UP, MPI_COMM_WORLD);
+        }
+
+        // Receive the top row from below into our bottom ghost row
+        if(my_PE_num != npes-1) {  // unless we are bottom PE
+            MPI_Recv(&Temperature_last[my_rows+1][1], COLUMNS, MPI_DOUBLE, my_PE_num+1, UP, MPI_COMM_WORLD, &status);
+        }
+
+        // === CONVERGENCE CHECK ===
+        dt = 0.0;
+        for(i = 1; i <= my_rows; i++) {
+            for(j = 1; j <= COLUMNS; j++) {
+                dt = fmax(fabs(Temperature[i][j] - Temperature_last[i][j]), dt);
+                Temperature_last[i][j] = Temperature[i][j];
             }
         }
-        MPI_Waitall(req_count, requests, MPI_STATUSES_IGNORE);
-        // Find global dt
-        // Optimized: Single operation
-        //MPI_Allreduce(&dt, &dt_global, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
-        // periodically print test values - only for PE in lower corner
+        // Find global dt                                                        
+        MPI_Reduce(&dt, &dt_global, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&dt_global, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+        // Periodically print test values - only for PE in lower corner
         if((iteration % 100) == 0) {
-            if (my_PE_num == npes-1){
-                track_progress(iteration, ROWS, Temperature);
+            if (my_PE_num == npes-1) {
+                track_progress(iteration, my_rows, npes, my_PE_num);
             }
-        }   
+            if (my_PE_num == 0) {
+                printf("Iteration %d: dt_global = %f\n", iteration, dt_global);
+            }
+        }
 
         iteration++;
     }
+
+    // Synchronize for accurate timing
+    MPI_Barrier(MPI_COMM_WORLD);
+
     // PE 0 finish timing and output values
-    if (my_PE_num==0){
-        gettimeofday(&stop_time,NULL);
+    if (my_PE_num == 0) {
+        gettimeofday(&stop_time, NULL);
         timersub(&stop_time, &start_time, &elapsed_time);
-        printf("\n================================= result ===================================");
-        printf("\nMax error at iteration %d was %f\n", iteration-1, dt_global);
-        printf("Total time was %f seconds.\n", elapsed_time.tv_sec+elapsed_time.tv_usec/1000000.0);
-        printf("============================================================================\n");
+
+        printf("\n============== RESULTS ==============\n");
+        if (dt_global <= MAX_TEMP_ERROR) {
+            printf("✅ CONVERGED after %d iterations\n", iteration-1);
+        } else {
+            printf("❌ Did NOT converge after %d iterations\n", iteration-1);
+        }
+        printf("Final error: %f\n", dt_global);
+        printf("Total time: %f seconds\n", elapsed_time.tv_sec + elapsed_time.tv_usec/1000000.0);
+        printf("====================================\n");
     }
 
-    // Free memory after all of the communication has finished
+    // Free memory
+    for(i = 0; i < my_rows + 2; i++) {
+        free(Temperature[i]);
+        free(Temperature_last[i]);
+    }
     free(Temperature);
     free(Temperature_last);
 
     MPI_Finalize();
     return 0;
+}
+
+void initialize(int npes, int my_PE_num, int my_rows) {
+    double tMin, tMax;  // Local boundary limits
+    int i, j;
+
+    // Initialize all points to 0.0
+    for(i = 0; i <= my_rows + 1; i++) {
+        for (j = 0; j <= COLUMNS + 1; j++) {
+            Temperature_last[i][j] = 0.0;
+        }
+    }
+
+    // ✅ CRITICAL: Correct boundary condition calculation
+    // This EXACTLY matches the original working version
+    tMin = (my_PE_num) * 100.0 / npes;
+    tMax = (my_PE_num + 1) * 100.0 / npes;
+
+    // Left and right boundaries
+    for (i = 0; i <= my_rows + 1; i++) {
+        Temperature_last[i][0] = 0.0;  // Left boundary = 0°C
+        Temperature_last[i][COLUMNS+1] = tMin + ((tMax - tMin) / my_rows) * i;  // Right boundary: linear gradient
+    }
+
+    // Top boundary (PE 0 only)
+    if (my_PE_num == 0) {
+        for (j = 0; j <= COLUMNS + 1; j++) {
+            Temperature_last[0][j] = 0.0;  // Top boundary = 0°C
+        }
+    }
+
+    // Bottom boundary (Last PE only)
+    if (my_PE_num == npes - 1) {
+        for (j = 0; j <= COLUMNS + 1; j++) {
+            Temperature_last[my_rows + 1][j] = (100.0 / COLUMNS) * j;  // Bottom: 0°C to 100°C
+        }
+    }
+
+    printf("Process %d: initialized boundaries (tMin=%.1f, tMax=%.1f, rows=%d)\n", 
+           my_PE_num, tMin, tMax, my_rows);
+}
+
+void track_progress(int iteration, int my_rows, int npes, int my_PE_num) {
+    int i;
+    
+    printf("---------- Iteration number: %d ------------\n", iteration);
+
+    // Calculate global coordinates for display
+    // This matches the original algorithm exactly
+    int rows_per_process = ROWS_GLOBAL / npes;
+    int extra_rows = ROWS_GLOBAL % npes;
+    
+    int global_start_row = my_PE_num * rows_per_process;
+    if (my_PE_num < extra_rows) {
+        global_start_row += my_PE_num;
+    } else {
+        global_start_row += extra_rows;
+    }
+
+    // Output global coordinates so user doesn't have to understand decomposition
+    for(i = 5; i >= 0; i--) {
+        if (my_rows - i > 0) {
+            int global_row = global_start_row + (my_rows - i);
+            printf("[%d,%d]: %5.2f  ", global_row, COLUMNS - i, Temperature[my_rows - i][COLUMNS - i]);
+        }
+    }
+    printf("\n");
 }
