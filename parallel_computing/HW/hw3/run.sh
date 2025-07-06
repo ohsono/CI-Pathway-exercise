@@ -36,25 +36,20 @@ pe_counts=(1 4 8)
 
 
 echo "!!!!STARTING MPI PROCESS TEST - original !!!!">> ${output_file}
-# run tests for Parallel process
-for pe in "${pe_counts[@]}"
-do
-    echo "Running with ${pe} pe..."
-    echo "=== Test with ${pe} pe ===" >> ${output_file}
-    echo "Start time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
+echo "=== Test with ${pe} pe ===" >> ${output_file}
+echo "Start time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
+pe=4    
+# Set pe count and run program
+TIMEFORMAT='%3R'
+runtime=$( { time echo 4000 | mpirun -n ${pe} hw3_laplace_mpi_1.o >> ${output_file}; } 2>&1 )
+  
+echo "End time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
+echo "Total wall clock time: ${runtime} seconds" >> ${output_file}
+echo "----------------------------------------" >> ${output_file}
+echo "" >> ${output_file}
     
-    # Set pe count and run program
-    TIMEFORMAT='%3R'
-    runtime=$( { time echo 4000 | mpirun -n ${pe} laplace_mpi.o >> ${output_file}; } 2>&1 )
-    
-    echo "End time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
-    echo "Total wall clock time: ${runtime} seconds" >> ${output_file}
-    echo "----------------------------------------" >> ${output_file}
-    echo "" >> ${output_file}
-    
-    # Add a small delay between runs
-    sleep 1
-done
+# Add a small delay between runs
+sleep 1
 echo "MPI Parallel Process: Testing complete. Results saved in ${output_file}"
 # end of the parallel process test
 
@@ -70,7 +65,7 @@ do
     
     # Set pe count and run program
     TIMEFORMAT='%3R'
-    runtime=$( { time mpirun -n ${pe} hw3_laplace_mpi_2.o >> ${output_file}; } 2>&1 )
+    runtime=$( { time echo 4000 | mpirun -n ${pe} hw3_laplace_mpi_2.o >> ${output_file}; } 2>&1 )
     
     echo "End time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
     echo "Total wall clock time: ${runtime} seconds" >> ${output_file}
@@ -84,7 +79,31 @@ echo "MPI Parallel Process: Testing complete. Results saved in ${output_file}"
 # end of the parallel process test
 
 
-echo "!!!!STARTING MPI PROCESS TEST -2d optimized !!!!">> ${output_file}
+echo "!!!!STARTING MPI PROCESS TEST - 2d optimized!!!!">> ${output_file}
+# run tests for Parallel process
+for pe in "${pe_counts[@]}"
+do
+    echo "Running with ${pe} pe..."
+    echo "=== Test with ${pe} pe ===" >> ${output_file}
+    echo "Start time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
+
+    # Set pe count and run program
+    TIMEFORMAT='%3R'
+    runtime=$( { time echo 4000 |  mpirun -n ${pe} hw3_laplace_mpi_3.o >> ${output_file}; } 2>&1 )
+
+    echo "End time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
+    echo "Total wall clock time: ${runtime} seconds" >> ${output_file}
+    echo "----------------------------------------" >> ${output_file}
+    echo "" >> ${output_file}
+
+    # Add a small delay between runs
+    sleep 1
+done
+echo "MPI Parallel Process: Testing complete. Results saved in ${output_file}"
+# end of the parallel process test
+
+
+echo "!!!!STARTING MPI PROCESS TEST -final optimized !!!!">> ${output_file}
 # run tests for Parallel process
 for pe in "${pe_counts[@]}"
 do
@@ -94,7 +113,7 @@ do
     
     # Set pe count and run program
     TIMEFORMAT='%3R'
-    runtime=$( { time mpirun -n ${pe} hw3_laplace_mpi_4.o >> ${output_file}; } 2>&1 )
+    runtime=$( { time echo 4000 | mpirun -n ${pe} hw3_laplace_mpi_4.o >> ${output_file}; } 2>&1 )
     
     echo "End time: $(date '+%Y-%m-%d %H:%M:%S.%N')" >> ${output_file}
     echo "Total wall clock time: ${runtime} seconds" >> ${output_file}
