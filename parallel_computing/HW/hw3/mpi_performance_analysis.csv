@@ -1,0 +1,21 @@
+Implementation,Processes,Iterations,Converged,Final_Error,Time_Seconds,Speedup,Efficiency,Iterations_Per_Second,Label
+Original,4,3372,True,0.009995,6.038548,,,558.412387,"Original
+(4P)"
+1D Optimized,1,3372,True,0.009995,21.854539,1.0,1.0,154.292891,"1D Optimized
+(1P)"
+1D Optimized,4,3372,True,0.009995,6.079321,3.594898,0.898725,554.667207,"1D Optimized
+(4P)"
+1D Optimized,8,3372,True,0.009995,3.666854,5.960024,0.745003,919.589381,"1D Optimized
+(8P)"
+2D Optimized,1,4000,False,20.922598,26.0277,1.0,1.0,153.682423,"2D Optimized
+(1P)"
+2D Optimized,4,4000,False,20.922598,7.39664,3.518855,0.879714,540.786087,"2D Optimized
+(4P)"
+2D Optimized,8,4000,False,20.922598,4.141792,6.284164,0.78552,965.765543,"2D Optimized
+(8P)"
+Final Optimized,1,3602,True,0.009998,23.325403,1.0,1.0,154.423913,"Final Optimized
+(1P)"
+Final Optimized,4,3602,True,0.009998,6.706944,3.477799,0.86945,537.055327,"Final Optimized
+(4P)"
+Final Optimized,8,3449,True,0.009999,3.673978,6.348814,0.793602,938.764467,"Final Optimized
+(8P)"

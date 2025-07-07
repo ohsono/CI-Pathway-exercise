@@ -56,12 +56,12 @@ int main(int argc, char *argv[]) {
 
     // Calculate dynamic local dimensions
     int rows_per_process = ROWS_GLOBAL / npes;
-    int extra_rows = ROWS_GLOBAL % npes;
+    int ghost_rows = ROWS_GLOBAL % npes;
     
     // Handle uneven division
     int my_rows = rows_per_process;
-    if (my_PE_num < extra_rows) {
-        my_rows++;  // First 'extra_rows' processes get one extra row
+    if (my_PE_num < ghost_rows) {
+        my_rows++;  // First 'ghost_rows' processes get one ghost row
     }
 
     if (my_PE_num == 0) {
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
         printf("Process 0 managing %d rows\n", my_rows);
     }
 
-    // Dynamic memory allocation for 2D arrays
+    // Dynamic memory allocation for 1D arrays
     Temperature = malloc((my_rows + 2) * sizeof(double*));
     Temperature_last = malloc((my_rows + 2) * sizeof(double*));
     
@@ -233,13 +233,13 @@ void track_progress(int iteration, int my_rows, int npes, int my_PE_num) {
     // Calculate global coordinates for display
     // This matches the original algorithm exactly
     int rows_per_process = ROWS_GLOBAL / npes;
-    int extra_rows = ROWS_GLOBAL % npes;
+    int ghost_rows = ROWS_GLOBAL % npes;
     
     int global_start_row = my_PE_num * rows_per_process;
-    if (my_PE_num < extra_rows) {
+    if (my_PE_num < ghost_rows) {
         global_start_row += my_PE_num;
     } else {
-        global_start_row += extra_rows;
+        global_start_row += ghost_rows;
     }
 
     // Output global coordinates so user doesn't have to understand decomposition

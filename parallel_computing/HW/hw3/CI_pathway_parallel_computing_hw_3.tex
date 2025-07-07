@@ -4,12 +4,12 @@
 %\usepackage{booktabs}
 \usepackage{array}
 \usepackage[utf8]{inputenc}
-
+\usepackage{colortbl}
 
 
 \usepackage{epstopdf}
 \usepackage{caption}
-
+\usepackage{siunitx}
 
 \usepackage[fleqn]{amsmath}
 
@@ -52,6 +52,13 @@
 \definecolor{MyBlue}{rgb}{0.0, 0.0, 0.5} 
 
 \definecolor{MyOrange1}{rgb}{1.0, 0.9, 0.0} 
+
+% Define custom row colors for table
+\definecolor{converged}{rgb}{0.85, 1.0, 0.85}      % light green
+\definecolor{notconverged}{rgb}{1.0, 0.85, 0.85}   % light red
+
+% Define custom header blue color for table headers
+\definecolor{headerblue}{rgb}{0.0, 0.2, 0.6}       % dark blue
 
 \usepackage[colorlinks=true, urlcolor= MyDarkRed, linkcolor= MyBlue, citecolor=MyDarkGreen ]{hyperref}
 
@@ -193,6 +200,8 @@ UCLA, Statistics\\Hochan Son\\Summer 2025\\
 
 
 \section{Introduction}
+Parallel computing is a critical component in modern scientific computing, enabling the solution of large-scale problems by distributing workloads across multiple processors. This report focuses on distributed memory parallelism using the Message Passing Interface (MPI) to solve the Laplace equation, a common benchmark in numerical analysis and scientific computing. The assignment explores the implementation and optimization of parallel algorithms for the Laplace solver, evaluates their performance on a high-performance computing (HPC) cluster, and analyzes the impact of various optimization strategies.
+Using dynamic memory allocation and non-blocking communication, the implementation aims to improve computational efficiency and scalability. The report presents a detailed performance analysis, including convergence rates, execution times, speedup factors, and parallel efficiency across different configurations. The results demonstrate the effectiveness of the optimizations and provide insights into the performance characteristics of distributed memory parallel applications.
 
 \section{Hardware Environment}
 
@@ -243,48 +252,236 @@ Socket Type & SP3 \\
 
 
 \section{Exercises For This Module.}
-Write a code that runs on 8 PEs and does a "circular shift." This means that every PE sends some data to its nearest neighbor either "up" (one PE higher) or "down." To make it circular, PE 7 and PE 0 are treated as neighbors. Make sure that whatever data you send is received. The easiest way to do that is to have each PE print out its received messages.
-
-%\newgeometry{top=1cm, left=1cm, right=1cm}
-%\begin{figure}[htbp]
-%\begin{center}
-%\includegraphics[width=17.5cm]{_assets/bigStudentPicArray_01.jpeg}
-%\caption{UCLA Graduate Statistics Students}
-%\label{fig:studentArray}
-%\end{center}
-%\end{figure}
-%\restoregeometry
+Write a code that runs on 8 PEs and does a \texttt{"circular shift."} This means that every PE sends some data to its nearest neighbor either \texttt{"up"} (one PE higher) or \texttt{"down."} To make it circular, PE 7 and PE 0 are treated as neighbors. Make sure that whatever data you send is received. The easiest way to do that is to have each PE print out its received messages.
 
 
 \subsection{Exercise Notes}
 
-\begin{enumerate}
-  \item {To compile with MPI we do either:
+  To compile with MPI we do either:
 
-  \begin{verbatim}
-    mpicc laplace_mpi.c
-    
-    or
-    
-    mpif90 laplace_mpi.f90
-  \end{verbatim}
-  \\You will have an executable called a.out. Now you need to ask for a compute node with 8 processes allocated in order to run. Similar, but not identical, to our previous Slurm command:
-  \begin{verbatim}
-    srun --account=becs-delta-cpu --partition=cpu-interactive \
-      --nodes=1 --tasks=8 --tasks-per-node=8 --pty bash
-  \end{verbatim}
-  \\And we wish to run using 8 processes. The command to run our a.out executable or available process is
-  \begin{verbatim}
-    mpirun -n 8 a.out
-  \end{verbatim}
+    \begin{verbatim}
+      mpicc laplace_mpi.c
+      
+      or
+      
+      mpif90 laplace_mpi.f90
+    \end{verbatim}
+  You will have an executable called a.out. Now you need to ask for a compute node with 8 processes allocated in order to run. Similar, but not identical, to our previous Slurm command:
+    \begin{verbatim}
+      srun --account=becs-delta-cpu --partition=cpu-interactive \
+        --nodes=1 --tasks=8 --tasks-per-node=8 --pty bash
+    \end{verbatim}
+  And we wish to run using 8 processes. The command to run our a.out executable or available process is
+    \begin{verbatim}
+      mpirun -n 8 a.out
+    \end{verbatim}
   Submit a copy of your code. Any output might be helpful, too.
-  }
+
 
 \section{Solution Implementation}
+  \subsection{original code, \texttt{hw3\_laplace\_mpi.c}}
+    \begin{itemize}
+    \item{The original, laplace\_mpi.c, is a simple MPI program that demonstrates among multiple processes. The code initializes the MPI environment, allocates an array for each process, and performs the shift by sending data to neighboring processes (PE). Each process prints the data it receives from its neighbor. The code is structured to run on multiple processors, allowing for parallel execution of the circular shift operation. However, it has fixed values for the number of processes and the size of the data array, which may not be suitable for dynamic mpi applications.}
+      \begin{lstlisting}[style=dm4ds_lstCustom_01]
+        #define NPES            4        // number of processors (fixed)
+      \end{lstlisting}
+    \end{itemize}
+    \subsection{1-dimension, \texttt{hw3\_laplace\_mpi\_1d.c}}
+    \begin{itemize}
+      \item \textbf{Non-blocking communication with computation overlap:} The code uses \texttt{MPI\_Irecv} and \texttt{MPI\_Isend} to allow computation and communication to overlap, improving efficiency.      \begin{lstlisting}[style=dm4ds_lstCustom_01]
+        MPI_Irecv(&Temperature[0][1], COLUMNS, MPI_DOUBLE, up_PE, 0, MPI_COMM_WORLD, &request);
+        MPI_Isend(&Temperature[my_rows][1], COLUMNS, MPI_DOUBLE, down_PE, 0, MPI_COMM_WORLD, &request);
+      \end{lstlisting}
+      \item \textbf{Dynamic memory allocation (1D contiguous memory allocation):} The code dynamically allocates memory for the temperature arrays, allowing for flexible problem sizes.
+      \begin{lstlisting}[style=dm4ds_lstCustom_01]
+        // Dynamic memory allocation for 1D arrays
+        double **Temperature;
+        double **Temperature_last;
+        Temperature = malloc((my_rows + 2) * sizeof(double*));
+        Temperature_last = malloc((my_rows + 2) * sizeof(double*));
+      \end{lstlisting}
+    \end{itemize}
+  \subsection{2-Simension, \texttt{laplace\_mpi\_2d.c}}
+  \begin{itemize}
+    \item \textbf{Non-blocking communication with computation overlap:} Similar to the 1D version, but adapted for 2D arrays.
+    \begin{lstlisting}[style=dm4ds_lstCustom_01]
+      MPI_Irecv(&Temperature[0][1], COLUMNS, MPI_DOUBLE, up_PE, 0, MPI_COMM_WORLD, &request);
+      MPI_Isend(&Temperature[my_rows][1], COLUMNS, MPI_DOUBLE, down_PE, 0, MPI_COMM_WORLD, &request);
+    \end{lstlisting}
+    \item \textbf{Dynamic memory allocation (2D contiguous memory allocation):} Uses pointer arithmetic to allocate a contiguous block for the 2D array.
+    \begin{lstlisting}[style=dm4ds_lstCustom_01]
+      // Dynamic memory allocation for 2D arrays
+      double (*Temperature)[COLUMNS+2];
+      double (*Temperature_last)[COLUMNS+2];
 
+      // Allocate dynamic memory
+      Temperature = (double (*)[COLUMNS+2])malloc((my_rows+2) * (COLUMNS+2) * sizeof(double));
+      Temperature_last = (double (*)[COLUMNS+2])malloc((my_rows+2) * (COLUMNS+2) * sizeof(double));
+    \end{lstlisting}
+    \item \textbf{Dynamic swapping memory allocation:} Efficiently swaps pointers for the next iteration.
+    \begin{lstlisting}[style=dm4ds_lstCustom_01]
+      // Swap pointers for next iteration
+      double (*temp)[COLUMNS+2] = Temperature;
+      Temperature = Temperature_last;
+      Temperature_last = temp;
+    \end{lstlisting}
+  \end{itemize}
+  \subsection{finally, laplace\_mpi\_2d\_optimized.c}
+  \begin{itemize}
+    \item {The final optimized version of the MPI Laplace solver combines the 1D and 2D optimizations, utilizing non-blocking communication, dynamic memory allocation, and efficient data swapping techniques. This version is designed to handle larger grids and improve performance by reducing communication overhead and enhancing computational efficiency. The code structure allows for easy scalability across multiple processes, making it suitable for high-performance computing environments.}
+    \item {Circular shift operation is implemented using MPI for parallel processing. Each process sends its data to its nearest neighbor, either up or down, and receives data from its neighbor. The circular nature of the shift is maintained by treating the first and last processes as neighbors. The implementation uses non-blocking communication to allow for overlap between computation and communication, improving overall performance.}
+    \begin{lstlisting}[style=dm4ds_lstCustom_01]
+      int next_PE, prev_PE;
+      // Calculate ring neighbors
+      next_PE = (my_PE_num + 1) % npes;
+      prev_PE = (my_PE_num - 1 + npes) % npes;
+      // Dynamically Calculate local dimensions
+      int rows_per_process = ROWS_GLOBAL / npes; 
+      int ghost_rows = ROWS_GLOBAL % npes;
+       // for even distribution of the ghost_rows in case the rows are not exactly divisible by process X.
+      int ROWS = rows_per_process + (my_PE_num < ghost_rows ? 1 : 0);
 
-\section*{Conclusion}
+      // Circular shift operation
+      MPI_Sendrecv(&data[0], 1, MPI_DOUBLE, up_PE, 0, &data[my_rows-1], 1, MPI_DOUBLE, down_PE, 0, MPI_COMM_WORLD, &status);
+      MPI_Sendrecv(&data[my_rows-1], 1, MPI_DOUBLE, down_PE, 0, &data[0], 1, MPI_DOUBLE, up_PE, 0, MPI_COMM_WORLD, &status);
+    \end{lstlisting}
+    \item {Free memory after use}
+    \begin{lstlisting}[style=dm4ds_lstCustom_01]
+            // Free memory after all of the communication has finished
+      for (int i = 0; i < ROWS + 2; i++) {
+          free(Temperature[i]);
+          free(Temperature_last[i]);
+      }
+      free(Temperature);
+      free(Temperature_last);
+    \end{lstlisting}
 
+  \end{itemize}
+\section{Performance Analysis}
+\begin{table}[H]
+\centering
+\caption{MPI Laplace Solver Performance Results}
+\label{tab:performance_results}
+\scriptsize
+\begin{tabular}{>{\columncolor{lightgray}}l c c c c c c c c}
+\hline
+\rowcolor{headerblue}
+\textcolor{white}{\textbf{Implementation}} & 
+\textcolor{white}{\textbf{Processes}} & 
+\textcolor{white}{\textbf{Iterations}} & 
+\textcolor{white}{\textbf{Converged}} & 
+\textcolor{white}{\textbf{Final Error}} & 
+\textcolor{white}{\textbf{Time (s)}} & 
+\textcolor{white}{\textbf{Speedup}} & 
+\textcolor{white}{\textbf{Efficiency}} & 
+\textcolor{white}{\textbf{Iter/sec}} \\
+\hline
+\rowcolor{converged}
+Original & 4 & 3372 & \textcolor{green}{\checkmark} & 0.009995 & 6.039 & \texttt{\---} & \texttt{\---} & 558.412 \\
+\hline
+\rowcolor{converged}
+1D Optimized & 1 & 3372 & \textcolor{green}{\checkmark} & 0.009995 & 21.855 & 1.000 & 1.000 & 154.293 \\
+\rowcolor{converged}
+1D Optimized & 4 & 3372 & \textcolor{green}{\checkmark} & 0.009995 & 6.079 & 3.595 & 0.899 & 554.667 \\
+\rowcolor{converged}
+1D Optimized & 8 & 3372 & \textcolor{green}{\checkmark} & 0.009995 & 3.667 & 5.960 & 0.745 & 919.589 \\
+\hline
+\rowcolor{notconverged}
+2D Optimized & 1 & 4000 & \textcolor{red}{$\times$} & 20.922598 & 26.028 & 1.000 & 1.000 & 153.682 \\
+\rowcolor{notconverged}
+2D Optimized & 4 & 4000 & \textcolor{red}{$\times$} & 20.922598 & 7.397 & 3.519 & 0.880 & 540.786 \\
+\rowcolor{notconverged}
+2D Optimized & 8 & 4000 & \textcolor{red}{$\times$} & 20.922598 & 4.142 & 6.284 & 0.786 & 965.766 \\
+\hline
+\rowcolor{converged}
+Final Optimized & 1 & 3602 & \textcolor{green}{\checkmark} & 0.009998 & 23.325 & 1.000 & 1.000 & 154.424 \\
+\rowcolor{converged}
+Final Optimized & 4 & 3602 & \textcolor{green}{\checkmark} & 0.009998 & 6.707 & 3.478 & 0.869 & 537.055 \\
+\rowcolor{converged}
+Final Optimized & 8 & 3449 & \textcolor{green}{\checkmark} & 0.009999 & 3.674 & 6.349 & 0.794 & 938.764 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Summary Statistics}
+
+\subsection{Convergence Analysis}
+
+\begin{table}[H]
+\centering
+\caption{Convergence Analysis by Implementation}
+\label{tab:convergence_analysis}
+\begin{tabular}{>{\columncolor{lightgray}}l c c S[table-format=2.3] S[table-format=3.1]}
+\hline
+\rowcolor{headerblue}
+\textcolor{white}{\textbf{Implementation}} & 
+\textcolor{white}{\textbf{Total Tests}} & 
+\textcolor{white}{\textbf{Converged Tests}} & 
+\textcolor{white}{\textbf{Avg Time (s)}} & 
+\textcolor{white}{\textbf{Convergence Rate (\%)}} \\
+\hline
+
+\rowcolor{converged}
+1D Optimized & 3 & 3 & 10.534 & 100.0 \\
+
+\rowcolor{notconverged}
+2D Optimized & 3 & 0 & 12.522 & 0.0 \\
+
+\rowcolor{converged}
+Final Optimized & 3 & 3 & 11.235 & 100.0 \\
+
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Performance Analysis (Converged Tests Only)}
+
+\begin{table}[H]
+\centering
+\caption{Performance Metrics for Successfully Converged Tests}
+\label{tab:performance_analysis}
+\scriptsize
+\begin{tabular}{>{\columncolor{lightgray}}l S[table-format=2.3] S[table-format=2.3] S[table-format=2.3] S[table-format=1.3] S[table-format=1.3] S[table-format=3.3]}
+\toprule
+\rowcolor{headerblue}
+\textcolor{white}{\textbf{Implementation}} & 
+\textcolor{white}{\textbf{Min Time}} & 
+\textcolor{white}{\textbf{Max Time}} & 
+\textcolor{white}{\textbf{Mean Time}} & 
+\textcolor{white}{\textbf{Max Speedup}} & 
+\textcolor{white}{\textbf{Mean Efficiency}} & 
+\textcolor{white}{\textbf{Max Throughput}} \\
+\midrule
+
+\rowcolor{converged}
+1D Optimized & 3.667 & 21.855 & 10.534 & 5.960 & 0.881 & 919.589 \\
+
+\rowcolor{converged}
+Final Optimized & 3.674 & 23.325 & 11.235 & 6.349 & 0.888 & 938.764 \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Key Performance Insights}
+
+\begin{itemize}
+\item \textbf{Best Overall Performance:} Final Optimized implementation with 8 processes achieved the fastest execution time of \SI{3.674}{\second}
+
+\item \textbf{Highest Speedup:} Final Optimized with 8 processes demonstrated a speedup factor of \textbf{6.349×} compared to single-process execution
+
+\item \textbf{Best Parallel Efficiency:} 1D Optimized with 4 processes achieved \textbf{89.9\%} parallel efficiency
+
+\item \textbf{Convergence Issues:} The 2D Optimized implementation failed to converge in all test configurations, reaching the maximum iteration limit of 4000
+
+\item \textbf{Scalability Trends:} All successfully converging implementations show good scalability up to 8 processes, though efficiency decreases with higher process counts (typical parallel computing behavior)
+
+\item \textbf{Throughput Champion:} Final Optimized with 8 processes achieved the highest computational throughput of \SI{938.764}{iterations\per\second}
+\end{itemize}
+
+\section{Conclusions}
+
+The analysis reveals that both the 1D Optimized and Final Optimized implementations demonstrate excellent parallel performance characteristics. The 2D Optimized approach, while showing good speedup trends, suffers from convergence issues that prevent practical application. The study demonstrates the importance of algorithmic correctness alongside performance optimization in parallel computing applications.
 
 %\newpage{}
 %\pagebreak{}
@@ -298,92 +495,58 @@ Write a code that runs on 8 PEs and does a "circular shift." This means that eve
 
 \section{Appendix.code}
 
-Here's some of our code (Note the use of VerbatimInput from package \texttt{fancyvrb}):
-
-
-\subsection{Code A: prime\_serial.c}
+\subsection{Code A: hw3\_laplace\_mpi\_1.c}
 
 %\begin{footnotesize}
 %\VerbatimInput{_code_A.R}
 %\end{footnotesize}
 
 \begin{footnotesize}
-\lstinputlisting[style=dm4ds_lstCustom_01]{./prime_serial.c}
+\lstinputlisting[style=dm4ds_lstCustom_01]{./laplace_mpi.c}
 \end{footnotesize}
 
 
-
-
-\subsection{Code B: prime\_parallel\_race.c}
+\subsection{Code B: hw3\_laplace\_mpi\_2.c}
 
 %\begin{footnotesize}
 %\VerbatimInput{_code_B.R}
 %\end{footnotesize}
 
 \begin{footnotesize}
-\lstinputlisting[style=dm4ds_lstCustom_01]{./prime_parallel_race.c}
+\lstinputlisting[style=dm4ds_lstCustom_01]{./hw3_laplace_mpi_2.c}
 \end{footnotesize}
 
 
 
-\subsection{Code C: prime\_parallel\_norace\_1.c}
+\subsection{Code C: hw3\_laplace\_mpi\_3.c}
+
+%\begin{footnotesize}
+%\VerbatimInput{_code_B.R}
+%\end{footnotesize}
+
+
+\begin{footnotesize}
+\lstinputlisting[style=dm4ds_lstCustom_01]{./hw3_laplace_mpi_3.c}
+\end{footnotesize}
+
+
+
+
+\subsection{Code D: hw3\_laplace\_mpi\_4.c}
 
 %\begin{footnotesize}
 %\VerbatimInput{_code_B.R}
 %\end{footnotesize}
 
 \begin{footnotesize}
-\lstinputlisting[style=dm4ds_lstCustom_01]{./prime_parallel_race.c}
+\lstinputlisting[style=dm4ds_lstCustom_01]{./hw3_laplace_mpi_4.c}
 \end{footnotesize}
 
-
-
-\subsection{Code C: prime\_parallel\_norace\_2.c}
-
-%\begin{footnotesize}
-%\VerbatimInput{_code_B.R}
-%\end{footnotesize}
-
-\begin{footnotesize}
-\lstinputlisting[style=dm4ds_lstCustom_01]{./prime_parallel_race.c}
-\end{footnotesize}
-
-
-
-% \subsection{Code C: laplace\_omp\_parallel.c}
-
-% %\begin{footnotesize}
-% %\VerbatimInput{_code_C.R}
-% %\end{footnotesize}
-
-% \begin{footnotesize}
-% \lstinputlisting[style=dm4ds_lstCustom_01]{ex1/laplace_omp_parallel.c}
-% \end{footnotesize}
-
-
-% \subsection{Code D: laplace\_mpi.c}
-
-% %\begin{footnotesize}
-% %\VerbatimInput{_code_C.R}
-% %\end{footnotesize}
-
-% \begin{footnotesize}
-% \lstinputlisting[style=dm4ds_lstCustom_01]{ex2/laplace_mpi.c}
-% \end{footnotesize}
-
-
-
-\section{Appendix.hw2\_result.txt}
+\section{Appendix.hw3\_result.txt}
 
 \subsection{result.txt}
-\begin{footnotesize}
- \lstinputlisting[style=dm4ds_lstCustom_01]{./hw2_result.txt}
-\end{footnotesize}
-
-% \subsection{ex2\_result.txt}
-% \begin{footnotesize}
-%  \lstinputlisting[style=dm4ds_lstCustom_01]{ex2/ex2_result.txt}
-% \end{footnotesize}
-
+  \begin{footnotesize}
+  \lstinputlisting[style=dm4ds_lstCustom_01]{./hw3_result.txt}
+  \end{footnotesize}
 
 \end{document}

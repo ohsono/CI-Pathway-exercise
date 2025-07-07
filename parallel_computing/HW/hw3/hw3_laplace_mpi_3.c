@@ -1,5 +1,5 @@
 /****************************************************************
- * Optimized Laplace MPI C Version                                         
+ * 2 Dimension Optimized Laplace MPI C Version                                         
  *                                                               
  * Performance Optimizations:
  * - Non-blocking communication with computation overlap
