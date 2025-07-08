@@ -6,3 +6,5 @@
 /parallel_computing/HW/hw1/*.gz
 /parallel_computing/HW/hw2/*.gz
 *.synctex
+
+*.md
